@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Challenge - Flappy Bird × Subway Surfers</title>
+    <meta name="description"
+        content="The ultimate multitasking challenge: Play Flappy Bird and Subway Surfers simultaneously!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="game-container">
+        <!-- Split screen canvases -->
+        <div class="split-container">
+            <div class="game-panel left-panel">
+                <canvas id="flappyCanvas"></canvas>
+                <div class="panel-label">FLAPPY BIRD</div>
+            </div>
+            <div class="divider"></div>
+            <div class="game-panel right-panel">
+                <canvas id="subwayCanvas"></canvas>
+                <div class="panel-label">SUBWAY SURFERS</div>
+            </div>
+        </div>
+
+        <!-- UI Overlay -->
+        <div class="ui-overlay">
+            <div class="score-display">
+                <div class="score-section">
+                    <div class="score-label">FLAPPY</div>
+                    <div class="score-value" id="flappyScore">0</div>
+                </div>
+                <div class="score-divider">|</div>
+                <div class="score-section">
+                    <div class="score-label">SUBWAY</div>
+                    <div class="score-value" id="subwayScore">0</div>
+                </div>
+            </div>
+
+            <div class="total-score-display">
+                <div class="total-label">TOTAL SCORE</div>
+                <div class="total-value" id="totalScore">0</div>
+            </div>
+
+            <div class="high-score-display">
+                <div class="high-score-label">BEST</div>
+                <div class="high-score-value" id="highScore">0</div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <div class="title-container">
+                <h1 class="game-title">
+                    <span class="title-dual">DUAL</span>
+                    <span class="title-challenge">CHALLENGE</span>
+                </h1>
+                <div class="subtitle-container">
+                    <div class="subtitle-game">
+                        <span class="emoji">🐦</span>
+                        <span>Flappy Bird</span>
+                    </div>
+                    <div class="subtitle-x">×</div>
+                    <div class="subtitle-game">
+                        <span class="emoji">🏃</span>
+                        <span>Subway Surfers</span>
+                    </div>
+                </div>
+                <p class="game-instructions">
+                    <strong>Controls:</strong><br>
+                    <span class="control-item">🐦 SPACE = Jump</span>
+                    <span class="control-separator">•</span>
+                    <span class="control-item">🏃 A/D or ← → = Move Lanes</span>
+                </p>
+                <p class="game-warning">⚠️ Die in either game = GAME OVER</p>
+            </div>
+            <button class="start-button" id="startButton">
+                <span class="button-text">START DUAL CHALLENGE</span>
+                <span class="button-icon">🚀</span>
+            </button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="game-over-screen hidden" id="gameOverScreen">
+            <div class="game-over-container">
+                <h2 class="game-over-title">GAME OVER!</h2>
+                <div class="death-indicator" id="deathIndicator">
+                    <span id="deathMessage"></span>
+                </div>
+                <div class="final-scores">
+                    <div class="final-score-item">
+                        <div class="final-score-label">🐦 Flappy Bird</div>
+                        <div class="final-score-value" id="finalFlappyScore">0</div>
+                    </div>
+                    <div class="final-score-item">
+                        <div class="final-score-label">🏃 Subway Surfers</div>
+                        <div class="final-score-value" id="finalSubwayScore">0</div>
+                    </div>
+                    <div class="final-score-total">
+                        <div class="final-total-label">TOTAL SCORE</div>
+                        <div class="final-total-value" id="finalTotalScore">0</div>
+                    </div>
+                </div>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-label">Best Score</div>
+                        <div class="stat-value" id="finalHighScore">0</div>
+                    </div>
+                </div>
+                <button class="restart-button" id="restartButton">
+                    <span class="button-text">TRY AGAIN</span>
+                    <span class="button-icon">🔄</span>
+                </button>
+            </div>
+            <button class="reset-score-button" id="resetScoreButton">
+                RESET BEST SCORE
+            </button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+
+</html>
