@@ -107,21 +107,52 @@
                     </div>
                 </div>
                 <div class="stats-container">
-                    <div class="stat-item">
-                        <div class="stat-label">Best Score</div>
-                        <div class="stat-value" id="finalHighScore">0</div>
-                    </div>
+                    <div class="stat-value" id="finalHighScore">0</div>
                 </div>
+            </div>
+
+            <div class="leaderboard-section">
+                <input type="text" id="playerNameInput" placeholder="Enter Name for Leaderboard" maxlength="15"
+                    class="player-name-input">
+                <button class="submit-score-button" id="submitScoreButton">
+                    SUBMIT SCORE 🏆
+                </button>
+            </div>
+
+            <div class="game-over-buttons">
                 <button class="restart-button" id="restartButton">
                     <span class="button-text">TRY AGAIN</span>
                     <span class="button-icon">🔄</span>
                 </button>
+                <button class="view-leaderboard-button" id="viewLeaderboardButton">
+                    LEADERBOARD 📜
+                </button>
             </div>
-            <button class="reset-score-button" id="resetScoreButton">
-                RESET BEST SCORE
-            </button>
+        </div>
+        <button class="reset-score-button" id="resetScoreButton">
+            RESET LOCAL BEST
+        </button>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div class="leaderboard-modal hidden" id="leaderboardModal">
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h2>GLOBAL TOP 10</h2>
+                <button class="close-leaderboard" id="closeLeaderboard">×</button>
+            </div>
+            <div class="leaderboard-list" id="leaderboardList">
+                <div class="loading-spinner">Loading...</div>
+                <!-- populated by js -->
+            </div>
         </div>
     </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 
     <script src="game.js"></script>
 </body>

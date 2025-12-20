@@ -40,6 +40,184 @@ const CONFIG = {
     }
 };
 
+// ===== FIREBASE CONFIGURATION =====
+// TODO: Replace with your actual Firebase project configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCBXU8m653_Y4WX0zIq8tQ9XQA73H6Zbl0",
+  authDomain: "flappy-subway.firebaseapp.com",
+  databaseURL: "https://flappy-subway-default-rtdb.firebaseio.com",
+  projectId: "flappy-subway",
+  storageBucket: "flappy-subway.firebasestorage.app",
+  messagingSenderId: "371224647268",
+  appId: "1:371224647268:web:07bc5e7e6cd57870707171",
+  measurementId: "G-3MRZR5H3LC"
+};
+// Initialize Firebase safely
+let firebaseDb = null;
+try {
+    if (typeof firebase !== 'undefined') {
+        firebase.initializeApp(firebaseConfig);
+        firebaseDb = firebase.database();
+        console.log("Firebase initialized successfully");
+    } else {
+        console.warn("Firebase SDK not loaded");
+    }
+} catch (e) {
+    console.error("Firebase initialization failed:", e);
+}
+
+// ===== LEADERBOARD MANAGER =====
+class LeaderboardManager {
+    constructor() {
+        this.modal = document.getElementById('leaderboardModal');
+        this.list = document.getElementById('leaderboardList');
+        this.closeBtn = document.getElementById('closeLeaderboard');
+        this.viewBtn = document.getElementById('viewLeaderboardButton');
+        this.submitBtn = document.getElementById('submitScoreButton');
+        this.nameInput = document.getElementById('playerNameInput');
+
+        this.setupListeners();
+    }
+
+    setupListeners() {
+        if (this.closeBtn) {
+            this.closeBtn.addEventListener('click', () => this.hide());
+        }
+        if (this.viewBtn) {
+            this.viewBtn.addEventListener('click', () => {
+                this.show();
+                this.fetchScores();
+            });
+        }
+        if (this.submitBtn) {
+            this.submitBtn.addEventListener('click', () => this.submitScore());
+        }
+
+        // Close on backdrop click
+        if (this.modal) {
+            this.modal.addEventListener('click', (e) => {
+                if (e.target === this.modal) this.hide();
+            });
+        }
+    }
+
+    show() {
+        if (this.modal) this.modal.classList.remove('hidden');
+    }
+
+    hide() {
+        if (this.modal) this.modal.classList.add('hidden');
+    }
+
+    async submitScore() {
+        if (!firebaseDb) {
+            alert("Firebase not configured! Cannot submit score.");
+            return;
+        }
+
+        const name = this.nameInput.value.trim();
+        const score = parseInt(document.getElementById('finalTotalScore').textContent) || 0;
+
+        if (!name) {
+            alert("Please enter a name!");
+            return;
+        }
+
+        try {
+            this.submitBtn.disabled = true;
+            this.submitBtn.textContent = "Submitting...";
+
+            const scoresRef = firebaseDb.ref('scores');
+            await scoresRef.push({
+                name: name,
+                score: score,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Show success styling
+            this.submitBtn.textContent = "Submitted! ✅";
+            this.submitBtn.style.background = "#27AE60";
+
+            // Disable input after submission
+            this.nameInput.disabled = true;
+
+            // Show leaderboard after short delay
+            setTimeout(() => {
+                this.show();
+                this.fetchScores();
+            }, 1000);
+
+        } catch (e) {
+            console.error("Error submitting score:", e);
+            alert("Failed to submit score. See console for details.");
+            this.submitBtn.disabled = false;
+            this.submitBtn.textContent = "SUBMIT SCORE 🏆";
+        }
+    }
+
+    fetchScores() {
+        if (!firebaseDb) {
+            this.list.innerHTML = '<div class="loading-spinner">Leaderboard unavailable (Firebase not configured)</div>';
+            return;
+        }
+
+        this.list.innerHTML = '<div class="loading-spinner">Loading scores...</div>';
+
+        const scoresRef = firebaseDb.ref('scores');
+        scoresRef.orderByChild('score').limitToLast(10).once('value')
+            .then((snapshot) => {
+                const scores = [];
+                snapshot.forEach((childSnapshot) => {
+                    scores.push(childSnapshot.val());
+                });
+
+                // Firebase returns ascending order, so reverse it
+                scores.reverse();
+
+                this.renderScores(scores);
+            })
+            .catch((e) => {
+                console.error("Error fetching scores:", e);
+                this.list.innerHTML = '<div class="loading-spinner">Error loading scores</div>';
+            });
+    }
+
+    renderScores(scores) {
+        if (scores.length === 0) {
+            this.list.innerHTML = '<div class="loading-spinner">No scores yet! Be the first!</div>';
+            return;
+        }
+
+        let html = '';
+        scores.forEach((entry, index) => {
+            let rankEmoji = '';
+            if (index === 0) rankEmoji = '🥇';
+            else if (index === 1) rankEmoji = '🥈';
+            else if (index === 2) rankEmoji = '🥉';
+            else rankEmoji = `#${index + 1}`;
+
+            html += `
+                <div class="leaderboard-entry">
+                    <div class="leaderboard-rank">${rankEmoji}</div>
+                    <div class="leaderboard-name">${this.escapeHtml(entry.name)}</div>
+                    <div class="leaderboard-score">${entry.score}</div>
+                </div>
+            `;
+        });
+        this.list.innerHTML = html;
+    }
+
+    escapeHtml(text) {
+        if (!text) return text;
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+}
+
 // Error Logger Helper
 function logError(error) {
     console.error(error);
@@ -653,6 +831,7 @@ class DualGame {
             this.subwayCtx = this.subwayCanvas.getContext('2d');
 
             this.state = new DualGameState();
+            this.leaderboard = new LeaderboardManager();
 
             this.bird = new Bird();
             this.pipes = [];
@@ -760,6 +939,62 @@ class DualGame {
                 this.player.moveRight();
             }
         });
+
+        // Touch Controls for Mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+
+            // Handle Game Start/Restart on Tap
+            if (!this.state.isPlaying || this.state.isGameOver) {
+                e.preventDefault(); // Prevent standard touch behaviors (scroll/zoom)
+                if (!this.state.isPlaying && !this.state.isGameOver) {
+                    this.startGame();
+                } else if (this.state.isGameOver) {
+                    if (Date.now() - this.gameOverTime < 2000) return;
+                    this.restartGame();
+                }
+                return;
+            }
+
+            const touch = e.changedTouches[0];
+            const halfWidth = window.innerWidth / 2;
+
+            if (touch.clientX < halfWidth) {
+                // Left side: Flappy Bird Jump
+                e.preventDefault();
+                this.bird.jump();
+            } else {
+                // Right side: Record for Swipe
+                touchStartX = touch.clientX;
+                touchStartY = touch.clientY;
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', (e) => {
+            if (e.target.tagName === 'BUTTON') return;
+            if (!this.state.isPlaying) return;
+
+            const touch = e.changedTouches[0];
+            const halfWidth = window.innerWidth / 2;
+
+            if (touch.clientX >= halfWidth) {
+                const touchEndX = touch.clientX;
+                const deltaX = touchEndX - touchStartX;
+                const threshold = 30; // Minimum swipe distance
+
+                if (Math.abs(deltaX) > threshold) {
+                    e.preventDefault();
+                    if (deltaX > 0) {
+                        this.player.moveRight();
+                    } else {
+                        this.player.moveLeft();
+                    }
+                }
+            }
+        }, { passive: false });
     }
 
     startGame() {
@@ -777,6 +1012,20 @@ class DualGame {
 
     restartGame() {
         document.getElementById('gameOverScreen').classList.add('hidden');
+
+        // Reset Leaderboard UI
+        const submitBtn = document.getElementById('submitScoreButton');
+        const nameInput = document.getElementById('playerNameInput');
+        if (submitBtn) {
+            submitBtn.textContent = "SUBMIT SCORE 🏆";
+            submitBtn.disabled = false;
+            submitBtn.style.background = "#27AE60";
+        }
+        if (nameInput) {
+            nameInput.disabled = false;
+            nameInput.value = "";
+        }
+
         this.state.reset();
         this.bird.reset();
         this.player.reset();

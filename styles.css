@@ -724,3 +724,197 @@ body::before {
 .reset-score-button:active {
     transform: translateY(0);
 }
+
+/* Leaderboard Styles */
+.leaderboard-section {
+    margin: 1rem 0;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.player-name-input {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    width: 200px;
+    text-align: center;
+}
+
+.submit-score-button {
+    background: #27AE60;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submit-score-button:hover {
+    transform: scale(1.05);
+    background: #219150;
+}
+
+.submit-score-button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.view-leaderboard-button {
+    background: #8E44AD;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.view-leaderboard-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: #9B59B6;
+}
+
+/* Leaderboard Modal */
+.leaderboard-modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+.leaderboard-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+}
+
+.leaderboard-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 800;
+}
+
+.close-leaderboard {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #95a5a6;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.5rem;
+}
+
+.close-leaderboard:hover {
+    color: #e74c3c;
+}
+
+.leaderboard-list {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.leaderboard-entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.leaderboard-entry:nth-child(1) {
+    background: rgba(255, 215, 0, 0.1);
+    color: #B7950B;
+}
+
+.leaderboard-entry:nth-child(2) {
+    background: rgba(192, 192, 192, 0.1);
+    color: #7F8C8D;
+}
+
+.leaderboard-entry:nth-child(3) {
+    background: rgba(205, 127, 50, 0.1);
+    color: #A0522D;
+}
+
+.leaderboard-rank {
+    width: 30px;
+}
+
+.leaderboard-name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.leaderboard-score {
+    font-weight: 800;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: #95a5a6;
+    padding: 2rem;
+}
+
+.score-submitted-msg {
+    color: #27AE60;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
