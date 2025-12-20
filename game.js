@@ -43,14 +43,14 @@ const CONFIG = {
 // ===== FIREBASE CONFIGURATION =====
 // TODO: Replace with your actual Firebase project configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCBXU8m653_Y4WX0zIq8tQ9XQA73H6Zbl0",
-  authDomain: "flappy-subway.firebaseapp.com",
-  databaseURL: "https://flappy-subway-default-rtdb.firebaseio.com",
-  projectId: "flappy-subway",
-  storageBucket: "flappy-subway.firebasestorage.app",
-  messagingSenderId: "371224647268",
-  appId: "1:371224647268:web:07bc5e7e6cd57870707171",
-  measurementId: "G-3MRZR5H3LC"
+    apiKey: "AIzaSyCBXU8m653_Y4WX0zIq8tQ9XQA73H6Zbl0",
+    authDomain: "flappy-subway.firebaseapp.com",
+    databaseURL: "https://flappy-subway-default-rtdb.firebaseio.com",
+    projectId: "flappy-subway",
+    storageBucket: "flappy-subway.firebasestorage.app",
+    messagingSenderId: "371224647268",
+    appId: "1:371224647268:web:07bc5e7e6cd57870707171",
+    measurementId: "G-3MRZR5H3LC"
 };
 // Initialize Firebase safely
 let firebaseDb = null;
@@ -833,6 +833,12 @@ class DualGame {
             this.state = new DualGameState();
             this.leaderboard = new LeaderboardManager();
 
+            // Show leaderboard on initial load
+            setTimeout(() => {
+                this.leaderboard.show();
+                this.leaderboard.fetchScores();
+            }, 500);
+
             this.bird = new Bird();
             this.pipes = [];
             this.lastPipeTime = 0;
@@ -879,6 +885,16 @@ class DualGame {
                 e.preventDefault();
                 e.stopPropagation();
                 this.startGame();
+            });
+        }
+
+        const startLeaderboardBtn = document.getElementById('startScreenLeaderboardBtn');
+        if (startLeaderboardBtn) {
+            startLeaderboardBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.leaderboard.show();
+                this.leaderboard.fetchScores();
             });
         }
 
