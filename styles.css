@@ -3,6 +3,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Prevent default touch actions like pinch-zoom on everything */
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    /* fix for iOS rubber banding */
+    top: 0;
+    left: 0;
 }
 
 body {
@@ -12,9 +26,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-    position: relative;
     /* Prevent pull-to-refresh on mobile */
     overscroll-behavior: none;
 }
@@ -667,6 +678,60 @@ body::before {
     display: none;
 }
 
+/* ===== Rotate Device Message ===== */
+.rotate-message {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.rotate-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: rotateIcon 2s infinite ease-in-out;
+}
+
+@keyframes rotateIcon {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    30% {
+        transform: rotate(-90deg);
+    }
+
+    70% {
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.rotate-message h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #FFD700;
+}
+
+.rotate-message p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
 /* ===== Responsive Design ===== */
 @media (max-width: 1400px) {
     .game-title {
@@ -678,7 +743,8 @@ body::before {
     }
 }
 
-@media (max-width: 1200px) {
+/* Tablet Portrait logic - Vertical Split */
+@media (max-width: 1200px) and (orientation: portrait) {
     .split-container {
         flex-direction: column;
     }
@@ -691,6 +757,68 @@ body::before {
     .left-panel canvas,
     .right-panel canvas {
         border-radius: 12px;
+    }
+}
+
+/* Mobile Portrait - Show Rotate Message */
+@media screen and (max-width: 900px) and (orientation: portrait) {
+    .game-container {
+        display: none !important;
+    }
+
+    .rotate-message {
+        display: flex;
+    }
+}
+
+/* Mobile Landscape - Force Side-by-Side */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    .split-container {
+        flex-direction: row;
+        /* Ensure row */
+    }
+
+    .divider {
+        width: 4px;
+        height: 100%;
+    }
+
+    .game-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        padding: 0;
+        max-width: none;
+        /* Allow full width */
+        max-height: none;
+        /* Allow full height */
+    }
+
+    .ui-overlay {
+        top: 5px;
+        transform: translateX(-50%) scale(0.7);
+        /* Scale down UI */
+    }
+
+    .score-display {
+        padding: 5px 15px;
+    }
+
+    .score-label {
+        font-size: 9px;
+    }
+
+    .score-value {
+        font-size: 22px;
+    }
+
+    .game-title {
+        font-size: 32px;
+    }
+
+    .start-button {
+        padding: 10px 30px;
+        font-size: 16px;
     }
 }
 

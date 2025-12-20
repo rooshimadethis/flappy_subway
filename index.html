@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dual Challenge - Flappy Bird × Subway Surfers</title>
     <meta name="description"
         content="The ultimate multitasking challenge: Play Flappy Bird and Subway Surfers simultaneously!">
@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="mobile-styles.css">
 </head>
 
 <body>
@@ -112,29 +113,36 @@
                 <div class="stats-container">
                     <div class="stat-value" id="finalHighScore">0</div>
                 </div>
-            </div>
 
-            <div class="leaderboard-section">
-                <input type="text" id="playerNameInput" placeholder="Enter Name for Leaderboard" maxlength="15"
-                    class="player-name-input">
-                <button class="submit-score-button" id="submitScoreButton">
-                    SUBMIT SCORE 🏆
-                </button>
-            </div>
+                <div class="leaderboard-section">
+                    <input type="text" id="playerNameInput" placeholder="Enter Name for Leaderboard" maxlength="15"
+                        class="player-name-input">
+                    <button class="submit-score-button" id="submitScoreButton">
+                        SUBMIT SCORE 🏆
+                    </button>
+                </div>
 
-            <div class="game-over-buttons">
-                <button class="restart-button" id="restartButton">
-                    <span class="button-text">TRY AGAIN</span>
-                    <span class="button-icon">🔄</span>
-                </button>
-                <button class="view-leaderboard-button" id="viewLeaderboardButton">
-                    LEADERBOARD 📜
-                </button>
+                <div class="game-over-buttons">
+                    <button class="restart-button" id="restartButton">
+                        <span class="button-text">TRY AGAIN</span>
+                        <span class="button-icon">🔄</span>
+                    </button>
+                    <button class="view-leaderboard-button" id="viewLeaderboardButton">
+                        LEADERBOARD 📜
+                    </button>
+                </div>
             </div>
         </div>
         <button class="reset-score-button" id="resetScoreButton">
             RESET LOCAL BEST
         </button>
+    </div>
+
+    <!-- Rotate Device Message -->
+    <div class="rotate-message" id="rotateMessage">
+        <div class="rotate-icon">📱</div>
+        <h2>PLEASE ROTATE DEVICE</h2>
+        <p>This game is best experienced in landscape mode.</p>
     </div>
 
     <!-- Leaderboard Modal -->

@@ -149,7 +149,16 @@ class LeaderboardManager {
 
         } catch (e) {
             console.error("Error submitting score:", e);
-            alert("Failed to submit score. See console for details.");
+            let msg = "Failed to submit score.";
+
+            // Check for common deployment issues
+            if (e.code === 'PERMISSION_DENIED') {
+                msg += "\n\nPermission denied. Check your Firebase Database Rules.";
+            } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                msg += "\n\nNote: If this works locally but not here, you likely need to add '" + window.location.hostname + "' to your Firebase Authorized Domains or API Key restrictions.";
+            }
+
+            alert(msg);
             this.submitBtn.disabled = false;
             this.submitBtn.textContent = "SUBMIT SCORE 🏆";
         }
@@ -178,7 +187,13 @@ class LeaderboardManager {
             })
             .catch((e) => {
                 console.error("Error fetching scores:", e);
-                this.list.innerHTML = '<div class="loading-spinner">Error loading scores</div>';
+                let errorDetails = "Error loading scores";
+
+                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                    errorDetails += "<br><span style='font-size: 0.8em; color: #ff6b6b'>Host not authorized? Check Firebase Console.</span>";
+                }
+
+                this.list.innerHTML = `<div class="loading-spinner">${errorDetails}</div>`;
             });
     }
 
