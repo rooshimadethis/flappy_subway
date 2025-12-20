@@ -134,3 +134,45 @@ button.fullscreen-button:hover {
         animation: none;
     }
 }
+/* Control Hints */
+.control-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+    opacity: 0; 
+    /* Default hidden, shown via animation or specific mobile query */
+    animation: hintFadeIn 3s ease-in-out forwards;
+}
+
+@keyframes hintFadeIn {
+    0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0.5; transform: translateX(-50%) translateY(0); } /* Settle at lower opacity */
+}
+
+/* Ensure they are visible on mobile landscape */
+@media (max-width: 1300px) and (orientation: landscape) {
+    .control-hint {
+        opacity: 0.8 !important; /* Force visibility on mobile/tablet */
+    }
+}
+
+/* Hide on Desktop standard */
+@media (min-width: 1301px) {
+    .control-hint {
+        display: none;
+    }
+}
