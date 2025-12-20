@@ -1013,7 +1013,7 @@ class DualGame {
                     if (!this.state.isPlaying && !this.state.isGameOver) {
                         this.startGame();
                     } else if (this.state.isGameOver) {
-                        if (Date.now() - this.gameOverTime < 2000) return;
+                        if (Date.now() - this.gameOverTime < 1000) return;
                         this.restartGame();
                     }
                 }
@@ -1048,7 +1048,7 @@ class DualGame {
                 if (!this.state.isPlaying && !this.state.isGameOver) {
                     this.startGame();
                 } else if (this.state.isGameOver) {
-                    if (Date.now() - this.gameOverTime < 2000) return;
+                    if (Date.now() - this.gameOverTime < 1000) return;
                     this.restartGame();
                 }
                 return;
