@@ -1,5 +1,5 @@
 /* Base styles for the fullscreen button */
-.fullscreen-button {
+button.fullscreen-button {
     margin-top: 20px;
     font-size: 14px;
     padding: 10px 24px;
@@ -14,15 +14,15 @@
     letter-spacing: 1px;
 }
 
-.fullscreen-button:hover {
+button.fullscreen-button:hover {
     background: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
 }
 
-/* Mobile styles - Making it PROMINENT as requested */
+/* Mobile styles */
 @media (max-width: 1024px) {
 
-    /* Stack game over buttons vertically on mobile */
+    /* Stack game over buttons vertically on mobile details */
     .game-over-buttons {
         flex-direction: column;
         align-items: center;
@@ -30,57 +30,107 @@
         gap: 15px !important;
     }
 
-    /* Make all buttons in the stack wider/more clickable */
-    .game-over-buttons button {
-        width: 80% !important;
-        max-width: 300px;
-        padding: 15px 20px !important;
-    }
-
-    button.fullscreen-button {
+    body button.fullscreen-button {
         display: block;
-        /* Ensure it's visible */
         position: absolute;
         left: 20px;
         top: 20px;
         margin: 0;
-        /* Reset margins */
         background: linear-gradient(135deg, #00b09b, #96c93d);
-        /* Vibrant green gradient */
         border: none;
         padding: 12px 24px;
-        /* Smaller padding for corner button */
         font-size: 14px;
-        /* Smaller font */
         font-weight: 800;
         box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
         text-transform: uppercase;
         letter-spacing: 1px;
         animation: pulseAttention 2s infinite ease-in-out;
         width: auto !important;
-        /* Auto width */
         max-width: none;
         z-index: 2000;
     }
 
-    button.fullscreen-button:active {
+    body button.fullscreen-button:active {
         transform: scale(0.95);
     }
 }
 
-@keyframes pulseAttention {
-    0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(150, 201, 61, 0.7);
+/* Landscape Mobile Optimizations (Compact Mode) */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .game-over-screen {
+        align-items: flex-start;
+        /* Start from top to avoid clipping top */
+        padding-top: 20px;
+        overflow-y: auto;
+        /* Allow scroll if needed */
     }
 
-    50% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 15px rgba(150, 201, 61, 0);
+    .game-over-container {
+        transform: scale(0.85);
+        /* Slightly scale down everything */
+        transform-origin: top center;
+        margin-top: 10px;
+        width: 90%;
     }
 
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(150, 201, 61, 0);
+    /* Hide the huge Game Over title to save space */
+    .game-over-title {
+        display: none;
+    }
+
+    /* Compact Death Indicator */
+    .death-indicator {
+        margin-bottom: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+    /* Compact Score Box */
+    .final-scores {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+    }
+
+    .final-score-item {
+        padding: 4px 0;
+    }
+
+    .final-score-value,
+    .final-total-value {
+        font-size: 20px;
+    }
+
+    .final-total-label {
+        font-size: 14px;
+    }
+
+    .final-score-total {
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+
+    /* Buttons row again (horizontal saves height vs vertical) */
+    .game-over-buttons {
+        flex-direction: row;
+        gap: 10px !important;
+    }
+
+    .game-over-buttons button {
+        width: auto !important;
+        padding: 8px 16px !important;
+        font-size: 14px;
+    }
+
+    /* Hide the duplicate fullscreen button in the buttons list if we have the fixed one */
+    /* Restore the fullscreen button in the buttons list but reset its positioning/floating behavior */
+    #gameOverFullscreenBtn {
+        display: block !important;
+        position: static !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 8px 16px !important;
+        /* Optional: Remove the pulse if it's too distracting in the list, or keep it. I'll reduce the shadow */
+        box-shadow: 0 4px 6px rgba(0, 176, 155, 0.2);
+        animation: none;
     }
 }

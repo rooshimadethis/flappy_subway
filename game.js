@@ -1005,6 +1005,8 @@ class DualGame {
         }
 
         document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'INPUT') return;
+
             if (!this.state.isPlaying || this.state.isGameOver) {
                 if (e.code === 'Space' || e.code === 'Enter') {
                     e.preventDefault();
@@ -1038,7 +1040,7 @@ class DualGame {
         let touchStartY = 0;
 
         document.addEventListener('touchstart', (e) => {
-            if (e.target.tagName === 'BUTTON') return;
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
 
             // Handle Game Start/Restart on Tap
             if (!this.state.isPlaying || this.state.isGameOver) {
@@ -1067,7 +1069,7 @@ class DualGame {
         }, { passive: false });
 
         document.addEventListener('touchend', (e) => {
-            if (e.target.tagName === 'BUTTON') return;
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
             if (!this.state.isPlaying) return;
 
             const touch = e.changedTouches[0];
