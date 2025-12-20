@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="mobile-styles.css">
+    <link rel="stylesheet" href="ios-styles.css">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -157,6 +158,23 @@
         <div class="rotate-icon">📱</div>
         <h2>PLEASE ROTATE DEVICE</h2>
         <p>This game is best experienced in landscape mode.</p>
+    </div>
+
+    <!-- iOS Fullscreen Instructions Modal -->
+    <div class="ios-modal hidden" id="iosModal">
+        <div class="ios-modal-content">
+            <div class="ios-header">
+                <h3>📱 Fullscreen on iOS</h3>
+                <button class="close-ios" id="closeIosModal">×</button>
+            </div>
+            <p>iOS Safari doesn't support a fullscreen button.</p>
+            <p><strong>To play fullscreen:</strong></p>
+            <ol>
+                <li>Tap the <strong>Share</strong> button <span class="share-icon">⎋</span></li>
+                <li>Scroll down and tap <strong>"Add to Home Screen"</strong> ➕</li>
+                <li>Launch the game from your home screen! 🚀</li>
+            </ol>
+        </div>
     </div>
 
     <!-- Leaderboard Modal -->

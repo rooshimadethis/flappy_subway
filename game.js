@@ -1349,9 +1349,39 @@ window.addEventListener('load', () => {
 
     // Fullscreen Logic
     const toggleFullscreen = () => {
+        // Detect iOS (iPhone, iPad, iPod)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOS) {
+            // Show iOS instructions modal
+            const iosModal = document.getElementById('iosModal');
+            if (iosModal) {
+                iosModal.classList.remove('hidden');
+
+                // Ensure close button works
+                const closeBtn = document.getElementById('closeIosModal');
+                if (closeBtn) {
+                    closeBtn.onclick = () => {
+                        iosModal.classList.add('hidden');
+                    };
+                }
+
+                // Close on backdrop click
+                iosModal.onclick = (e) => {
+                    if (e.target === iosModal) {
+                        iosModal.classList.add('hidden');
+                    }
+                };
+            }
+            return;
+        }
+
+        // Standard Fullscreen API for Android/Desktop
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
                 console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                alert("Fullscreen not supported on this device/browser.");
             });
         } else {
             if (document.exitFullscreen) {
