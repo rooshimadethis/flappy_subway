@@ -1,0 +1,86 @@
+/* Base styles for the fullscreen button */
+.fullscreen-button {
+    margin-top: 20px;
+    font-size: 14px;
+    padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.fullscreen-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Mobile styles - Making it PROMINENT as requested */
+@media (max-width: 1024px) {
+
+    /* Stack game over buttons vertically on mobile */
+    .game-over-buttons {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 15px !important;
+    }
+
+    /* Make all buttons in the stack wider/more clickable */
+    .game-over-buttons button {
+        width: 80% !important;
+        max-width: 300px;
+        padding: 15px 20px !important;
+    }
+
+    button.fullscreen-button {
+        display: block;
+        /* Ensure it's visible */
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        margin: 0;
+        /* Reset margins */
+        background: linear-gradient(135deg, #00b09b, #96c93d);
+        /* Vibrant green gradient */
+        border: none;
+        padding: 12px 24px;
+        /* Smaller padding for corner button */
+        font-size: 14px;
+        /* Smaller font */
+        font-weight: 800;
+        box-shadow: 0 10px 20px rgba(0, 176, 155, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: pulseAttention 2s infinite ease-in-out;
+        width: auto !important;
+        /* Auto width */
+        max-width: none;
+        z-index: 2000;
+    }
+
+    button.fullscreen-button:active {
+        transform: scale(0.95);
+    }
+}
+
+@keyframes pulseAttention {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(150, 201, 61, 0.7);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(150, 201, 61, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(150, 201, 61, 0);
+    }
+}

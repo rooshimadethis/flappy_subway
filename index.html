@@ -10,8 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="mobile-styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 
 <body>
@@ -52,6 +55,11 @@
                 <div class="high-score-label">BEST</div>
                 <div class="high-score-value" id="highScore">0</div>
             </div>
+
+            <!-- In-Game Fullscreen Button -->
+            <button id="inGameFullscreenBtn" class="ingame-fullscreen-btn" aria-label="Fullscreen">
+                ⛶
+            </button>
         </div>
 
         <!-- Start Screen -->
@@ -86,6 +94,9 @@
             </button>
             <button class="view-leaderboard-button" id="startScreenLeaderboardBtn" style="margin-top: 20px;">
                 LEADERBOARD 📜
+            </button>
+            <button class="fullscreen-button" id="fullscreenBtn">
+                📱 GO FULLSCREEN
             </button>
         </div>
 
@@ -130,12 +141,15 @@
                     <button class="view-leaderboard-button" id="viewLeaderboardButton">
                         LEADERBOARD 📜
                     </button>
+                    <button class="fullscreen-button" id="gameOverFullscreenBtn">
+                        📱 FULLSCREEN
+                    </button>
                 </div>
             </div>
         </div>
-        <button class="reset-score-button" id="resetScoreButton">
+        <!-- <button class="reset-score-button" id="resetScoreButton">
             RESET LOCAL BEST
-        </button>
+        </button> -->
     </div>
 
     <!-- Rotate Device Message -->

@@ -66,6 +66,12 @@ try {
     console.error("Firebase initialization failed:", e);
 }
 
+// ===== CACHED ASSETS =====
+const ASSETS = {
+    gradients: {},
+    colors: {}
+};
+
 // ===== LEADERBOARD MANAGER =====
 class LeaderboardManager {
     constructor() {
@@ -299,6 +305,7 @@ class Bird {
         this.wingAngle = 0;
         this.blinkTimer = 0;
         this.isBlinking = false;
+        this.cachedGradient = null;
     }
 
     jump() {
@@ -340,11 +347,14 @@ class Bird {
             ctx.shadowBlur = 10;
             ctx.shadowOffsetY = 5;
 
-            const gradient = ctx.createRadialGradient(-5, -5, 0, 0, 0, this.radius);
-            gradient.addColorStop(0, '#FFE066');
-            gradient.addColorStop(1, '#FFCC00');
+            // Cache the bird body gradient
+            if (!this.cachedGradient) {
+                this.cachedGradient = ctx.createRadialGradient(-5, -5, 0, 0, 0, this.radius);
+                this.cachedGradient.addColorStop(0, '#FFE066');
+                this.cachedGradient.addColorStop(1, '#FFCC00');
+            }
 
-            ctx.fillStyle = gradient;
+            ctx.fillStyle = this.cachedGradient;
             ctx.beginPath();
             ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
             ctx.fill();
@@ -385,11 +395,13 @@ class Bird {
                 ctx.stroke();
             }
 
-            const beakGradient = ctx.createLinearGradient(15, 0, 30, 10);
-            beakGradient.addColorStop(0, '#FF7F50');
-            beakGradient.addColorStop(1, '#FF4500');
+            if (!this.beakGradient) {
+                this.beakGradient = ctx.createLinearGradient(15, 0, 30, 10);
+                this.beakGradient.addColorStop(0, '#FF7F50');
+                this.beakGradient.addColorStop(1, '#FF4500');
+            }
 
-            ctx.fillStyle = beakGradient;
+            ctx.fillStyle = this.beakGradient;
             ctx.beginPath();
             ctx.moveTo(this.radius - 2, 2);
             ctx.quadraticCurveTo(this.radius + 12, 4, this.radius - 2, 10);
@@ -482,6 +494,7 @@ class Pipe {
         this.topHeight = Math.random() * (CONFIG.flappy.pipes.maxHeight - CONFIG.flappy.pipes.minHeight) + CONFIG.flappy.pipes.minHeight;
         this.width = CONFIG.flappy.pipes.width;
         this.scored = false;
+        this.gradient = null;
     }
 
     update(dt) {
@@ -497,39 +510,47 @@ class Pipe {
         }
 
         // Safe Gradient Creation
-        let gradient;
-        try {
-            gradient = ctx.createLinearGradient(this.x, 0, this.x + CONFIG.flappy.pipes.width, 0);
-            gradient.addColorStop(0, '#229954');
-            gradient.addColorStop(0.5, '#2ECC71');
-            gradient.addColorStop(1, '#27AE60');
-        } catch (e) {
-            // Fallback if gradient fails
-            gradient = '#2ECC71';
+        // Safe Gradient Creation with Caching
+        if (!this.gradient) {
+            try {
+                // Create gradient relative to 0,0 since we will translate
+                this.gradient = ctx.createLinearGradient(0, 0, CONFIG.flappy.pipes.width, 0);
+                this.gradient.addColorStop(0, '#229954');
+                this.gradient.addColorStop(0.5, '#2ECC71');
+                this.gradient.addColorStop(1, '#27AE60');
+            } catch (e) {
+                this.gradient = '#2ECC71';
+            }
         }
 
-        ctx.fillStyle = gradient;
+        ctx.save();
+        ctx.translate(this.x, 0); // Translate to pipe position
+
+        ctx.fillStyle = this.gradient;
         const borderColor = '#1E8449';
         ctx.strokeStyle = borderColor;
         ctx.lineWidth = 2;
 
-        ctx.fillRect(this.x, 0, CONFIG.flappy.pipes.width, this.topHeight);
-        ctx.strokeRect(this.x, 0, CONFIG.flappy.pipes.width, this.topHeight);
+        // Draw relative to (0,0)
+        ctx.fillRect(0, 0, CONFIG.flappy.pipes.width, this.topHeight);
+        ctx.strokeRect(0, 0, CONFIG.flappy.pipes.width, this.topHeight);
 
-        ctx.fillRect(this.x - 5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
-        ctx.strokeRect(this.x - 5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
+        ctx.fillRect(-5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
+        ctx.strokeRect(-5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
 
         const bottomY = this.topHeight + CONFIG.flappy.pipes.gap;
         const bottomHeight = CONFIG.flappy.canvas.height - bottomY - 100;
-        ctx.fillRect(this.x, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
-        ctx.strokeRect(this.x, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
+        ctx.fillRect(0, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
+        ctx.strokeRect(0, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
 
-        ctx.fillRect(this.x - 5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
-        ctx.strokeRect(this.x - 5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
+        ctx.fillRect(-5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
+        ctx.strokeRect(-5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
 
         ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.fillRect(this.x + 10, 0, 10, this.topHeight - 30);
-        ctx.fillRect(this.x + 10, bottomY + 30, 10, bottomHeight - 30);
+        ctx.fillRect(10, 0, 10, this.topHeight - 30);
+        ctx.fillRect(10, bottomY + 30, 10, bottomHeight - 30);
+
+        ctx.restore();
     }
 
     isOffScreen() {
@@ -547,6 +568,7 @@ class SubwayPlayer {
         this.width = CONFIG.subway.player.width;
         this.height = CONFIG.subway.player.height;
         this.animationFrame = 0;
+        this.gradient = null;
     }
 
     getLaneX(lane) {
@@ -590,45 +612,53 @@ class SubwayPlayer {
             }
 
             ctx.save();
+            ctx.translate(this.x, this.y);
+
+            // Shadow
             ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
             ctx.beginPath();
-            ctx.ellipse(this.x + this.width / 2, this.y + this.height + 5, this.width / 2, 8, 0, 0, Math.PI * 2);
+            ctx.ellipse(this.width / 2, this.height + 5, this.width / 2, 8, 0, 0, Math.PI * 2);
             ctx.fill();
 
             // Safe Gradient
-            let gradient;
-            try {
-                gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
-                gradient.addColorStop(0, '#4ECDC4');
-                gradient.addColorStop(1, '#44A08D');
-            } catch (e) {
-                gradient = '#4ECDC4';
+            if (!this.gradient) {
+                try {
+                    this.gradient = ctx.createLinearGradient(0, 0, 0, this.height);
+                    this.gradient.addColorStop(0, '#4ECDC4');
+                    this.gradient.addColorStop(1, '#44A08D');
+                } catch (e) {
+                    this.gradient = '#4ECDC4';
+                }
             }
 
-            ctx.fillStyle = gradient;
-            this.drawRoundedRect(ctx, this.x, this.y, this.width, this.height, 10);
+            ctx.fillStyle = this.gradient;
+            this.drawRoundedRect(ctx, 0, 0, this.width, this.height, 10);
             ctx.fill();
 
+            // Head
             ctx.fillStyle = '#FFD93D';
             ctx.beginPath();
-            ctx.arc(this.x + this.width / 2, this.y - 15, 20, 0, Math.PI * 2);
+            ctx.arc(this.width / 2, -15, 20, 0, Math.PI * 2);
             ctx.fill();
 
+            // Hat/Hair
             ctx.fillStyle = '#FF6B6B';
             ctx.beginPath();
-            ctx.arc(this.x + this.width / 2, this.y - 25, 22, Math.PI, 0);
+            ctx.arc(this.width / 2, -25, 22, Math.PI, 0);
             ctx.fill();
 
+            // Eyes
             ctx.fillStyle = 'black';
             ctx.beginPath();
-            ctx.arc(this.x + this.width / 2 - 7, this.y - 18, 3, 0, Math.PI * 2);
-            ctx.arc(this.x + this.width / 2 + 7, this.y - 18, 3, 0, Math.PI * 2);
+            ctx.arc(this.width / 2 - 7, -18, 3, 0, Math.PI * 2);
+            ctx.arc(this.width / 2 + 7, -18, 3, 0, Math.PI * 2);
             ctx.fill();
 
+            // Legs
             const legOffset = Math.sin(this.animationFrame) * 8;
             ctx.fillStyle = '#2C3E50';
-            ctx.fillRect(this.x + 10, this.y + this.height - 5, 12, 25 + legOffset);
-            ctx.fillRect(this.x + 28, this.y + this.height - 5, 12, 25 - legOffset);
+            ctx.fillRect(10, this.height - 5, 12, 25 + legOffset);
+            ctx.fillRect(28, this.height - 5, 12, 25 - legOffset);
 
             ctx.restore();
         } catch (e) {
@@ -684,6 +714,11 @@ class SubwayObstacle {
         this.y = -this.height;
         this.speed = CONFIG.subway.obstacles.speed;
         this.color = this.getColor(type);
+
+        // Pre-calculate derived colors
+        this.darkColor = this.adjustBrightness(this.color, -30);
+        this.lightColor = this.adjustBrightness(this.color, 20);
+
         this.passed = false;
     }
 
@@ -713,7 +748,8 @@ class SubwayObstacle {
 
         const depth = 15;
 
-        ctx.fillStyle = this.adjustBrightness(this.color, -30);
+        // Use pre-calculated colors
+        ctx.fillStyle = this.darkColor;
         ctx.beginPath();
         ctx.moveTo(this.x + this.width, this.y);
         ctx.lineTo(this.x + this.width + depth, this.y - depth);
@@ -721,7 +757,7 @@ class SubwayObstacle {
         ctx.lineTo(this.x + this.width, this.y + this.height);
         ctx.fill();
 
-        ctx.fillStyle = this.adjustBrightness(this.color, 20);
+        ctx.fillStyle = this.lightColor;
         ctx.beginPath();
         ctx.moveTo(this.x, this.y);
         ctx.lineTo(this.x + depth, this.y - depth);
@@ -781,6 +817,7 @@ class SubwayCoin {
         this.y = -this.height;
         this.speed = CONFIG.subway.coins.speed;
         this.rotation = Math.random() * Math.PI;
+        this.gradient = null;
     }
 
     getLaneX(lane) {
@@ -801,11 +838,13 @@ class SubwayCoin {
         const scaleX = Math.abs(Math.sin(this.rotation));
         ctx.scale(scaleX, 1);
 
-        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.width / 2);
-        gradient.addColorStop(0, '#FFF700');
-        gradient.addColorStop(1, '#FFA500');
+        if (!this.gradient) {
+            this.gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.width / 2);
+            this.gradient.addColorStop(0, '#FFF700');
+            this.gradient.addColorStop(1, '#FFA500');
+        }
 
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = this.gradient;
         ctx.shadowColor = '#FFD700';
         ctx.shadowBlur = 10;
 
@@ -868,6 +907,7 @@ class DualGame {
             this.gameOverTime = 0;
 
             this.setupCanvases();
+            this.initSharedAssets(); // Initialize shared gradients/assets
             this.setupEventListeners();
             this.updateUI();
 
@@ -890,6 +930,28 @@ class DualGame {
         this.flappyCanvas.height = CONFIG.flappy.canvas.height;
         this.subwayCanvas.width = CONFIG.subway.canvas.width;
         this.subwayCanvas.height = CONFIG.subway.canvas.height;
+    }
+
+    initSharedAssets() {
+        // Cache sky gradient
+        this.skyGradient = this.flappyCtx.createLinearGradient(0, 0, 0, CONFIG.flappy.canvas.height);
+        this.skyGradient.addColorStop(0, '#87CEEB');
+        this.skyGradient.addColorStop(0.7, '#4A90E2');
+        this.skyGradient.addColorStop(1, '#F4A460');
+
+        // Cache subway gradient
+        this.subwayGradient = this.subwayCtx.createLinearGradient(0, 0, 0, CONFIG.subway.canvas.height);
+        this.subwayGradient.addColorStop(0, '#2C3E50');
+        this.subwayGradient.addColorStop(0.5, '#34495E');
+        this.subwayGradient.addColorStop(1, '#1A252F');
+
+        // Cache flappy ground gradient
+        const groundHeight = 100;
+        const groundY = CONFIG.flappy.canvas.height - groundHeight;
+        this.groundGradient = this.flappyCtx.createLinearGradient(0, groundY, 0, CONFIG.flappy.canvas.height);
+        this.groundGradient.addColorStop(0, '#8B7355');
+        this.groundGradient.addColorStop(1, '#DEB887');
+        this.groundY = groundY;
     }
 
     setupEventListeners() {
@@ -1182,11 +1244,8 @@ class DualGame {
         try {
             this.flappyCtx.clearRect(0, 0, CONFIG.flappy.canvas.width, CONFIG.flappy.canvas.height);
 
-            const skyGradient = this.flappyCtx.createLinearGradient(0, 0, 0, CONFIG.flappy.canvas.height);
-            skyGradient.addColorStop(0, '#87CEEB');
-            skyGradient.addColorStop(0.7, '#4A90E2');
-            skyGradient.addColorStop(1, '#F4A460');
-            this.flappyCtx.fillStyle = skyGradient;
+            // Use cached sky gradient
+            this.flappyCtx.fillStyle = this.skyGradient;
             this.flappyCtx.fillRect(0, 0, CONFIG.flappy.canvas.width, CONFIG.flappy.canvas.height);
 
             for (let pipe of this.pipes) {
@@ -1198,11 +1257,8 @@ class DualGame {
 
             this.subwayCtx.clearRect(0, 0, CONFIG.subway.canvas.width, CONFIG.subway.canvas.height);
 
-            const subwayGradient = this.subwayCtx.createLinearGradient(0, 0, 0, CONFIG.subway.canvas.height);
-            subwayGradient.addColorStop(0, '#2C3E50');
-            subwayGradient.addColorStop(0.5, '#34495E');
-            subwayGradient.addColorStop(1, '#1A252F');
-            this.subwayCtx.fillStyle = subwayGradient;
+            // Use cached subway gradient
+            this.subwayCtx.fillStyle = this.subwayGradient;
             this.subwayCtx.fillRect(0, 0, CONFIG.subway.canvas.width, CONFIG.subway.canvas.height);
 
             this.drawSubwayLanes();
@@ -1223,18 +1279,13 @@ class DualGame {
 
     drawFlappyGround() {
         const groundHeight = 100;
-        const groundY = CONFIG.flappy.canvas.height - groundHeight;
 
-        const groundGradient = this.flappyCtx.createLinearGradient(0, groundY, 0, CONFIG.flappy.canvas.height);
-        groundGradient.addColorStop(0, '#8B7355');
-        groundGradient.addColorStop(1, '#DEB887');
-
-        this.flappyCtx.fillStyle = groundGradient;
-        this.flappyCtx.fillRect(0, groundY, CONFIG.flappy.canvas.width, groundHeight);
+        this.flappyCtx.fillStyle = this.groundGradient;
+        this.flappyCtx.fillRect(0, this.groundY, CONFIG.flappy.canvas.width, groundHeight);
 
         this.flappyCtx.fillStyle = '#228B22';
         for (let i = 0; i < CONFIG.flappy.canvas.width; i += 20) {
-            this.flappyCtx.fillRect(i, groundY, 10, 5);
+            this.flappyCtx.fillRect(i, this.groundY, 10, 5);
         }
     }
 
@@ -1293,4 +1344,26 @@ class DualGame {
 let game;
 window.addEventListener('load', () => {
     game = new DualGame();
+
+    // Fullscreen Logic
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    };
+
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    const inGameFullscreenBtn = document.getElementById('inGameFullscreenBtn');
+    if (inGameFullscreenBtn) inGameFullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    const gameOverFullscreenBtn = document.getElementById('gameOverFullscreenBtn');
+    if (gameOverFullscreenBtn) gameOverFullscreenBtn.addEventListener('click', toggleFullscreen);
 });
