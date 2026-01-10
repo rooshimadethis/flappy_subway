@@ -421,36 +421,33 @@ class Bird {
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Fedora Hat
-            // Brim
-            ctx.fillStyle = '#2C3E50';
-            ctx.strokeStyle = '#1a252f';
+            // Beanie Hat
+            ctx.fillStyle = '#E74C3C'; // Main beanie color (Red)
+            ctx.strokeStyle = '#c0392b';
             ctx.lineWidth = 2;
 
+            // Beanie Body (The knitted part)
             ctx.beginPath();
-            ctx.ellipse(2, -18, 22, 6, 0.1, 0, Math.PI * 2);
+            ctx.moveTo(-18, -18);
+            ctx.bezierCurveTo(-18, -40, 18, -40, 18, -18);
+            ctx.closePath();
             ctx.fill();
             ctx.stroke();
 
-            // Crown
+            // Beanie Cuff (The folded part at the bottom)
+            ctx.fillStyle = '#C0392B'; // Slightly darker for the cuff
             ctx.beginPath();
-            ctx.moveTo(-10, -20);
-            ctx.lineTo(-12, -38);
-            ctx.bezierCurveTo(-5, -45, 15, -45, 16, -38);
-            ctx.lineTo(14, -20);
-            ctx.bezierCurveTo(5, -16, -5, -16, -10, -20);
+            // Using ellipse for the cuff to match the rounded look
+            ctx.ellipse(0, -18, 21, 6, 0, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
 
-            // Hat Band
-            ctx.fillStyle = '#E74C3C'; // Red band
+            // Pom-pom on top
+            ctx.fillStyle = '#FFFFFF'; // White pom-pom
             ctx.beginPath();
-            ctx.moveTo(-11, -25);
-            ctx.lineTo(-11, -30);
-            ctx.bezierCurveTo(2, -32, 14, -30, 15, -30);
-            ctx.lineTo(15, -25);
-            ctx.bezierCurveTo(5, -23, -5, -23, -11, -25);
+            ctx.arc(0, -38, 6, 0, Math.PI * 2);
             ctx.fill();
+            ctx.stroke();
 
             ctx.restore();
         } catch (e) {
