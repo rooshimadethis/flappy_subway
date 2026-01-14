@@ -12,6 +12,24 @@ export default class SubwayPlayer {
         this.animationFrame = 0;
         this.blinkTimer = 0;
         this.isBlinking = false;
+
+        // Load the pixel art pigeon pieces
+        this.images = {
+            body: new Image(),
+            leftFoot: new Image(),
+            rightFoot: new Image()
+        };
+
+        this.images.body.src = 'assets/pigeon_body.png';
+        this.images.leftFoot.src = 'assets/pigeon_left_foot.png';
+        this.images.rightFoot.src = 'assets/pigeon_right_foot.png';
+
+        this.imagesLoaded = 0;
+        const onLoaded = () => { this.imagesLoaded++; };
+
+        this.images.body.onload = onLoaded;
+        this.images.leftFoot.onload = onLoaded;
+        this.images.rightFoot.onload = onLoaded;
     }
 
     getLaneX(lane) {
@@ -67,140 +85,117 @@ export default class SubwayPlayer {
             ctx.save();
             ctx.translate(this.x, this.y);
 
-            const s = this.width / 5; // Scale unit
-            const bodyColor = '#808e9b';
-            const bellyColor = '#a5b1be';
-            const neckColor = '#7d5fff'; // Iridescent purple
-            const feetColor = '#ff7f50'; // Pinkish-orange pigeon feet
+            if (this.imagesLoaded >= 3) {
+                // Drawing with pixel art images
+                const size = this.width * 1.8; // Adjust size as needed
+                const centerX = this.width / 2;
+                const centerY = this.height / 2;
 
-            // Head bobbing - more of a "forward/back" pigeon thrust
-            const bobX = Math.cos(this.animationFrame * 0.5) * 3;
-            const bobY = Math.abs(Math.sin(this.animationFrame * 0.5)) * 2;
+                // Body bobbing (horizontal "thrust")
+                const bobX = Math.cos(this.animationFrame * 0.5) * 4;
+                const bobY = Math.abs(Math.sin(this.animationFrame * 0.5)) * 3;
 
-            // Draw shadow
-            ctx.fillStyle = 'rgba(0,0,0,0.15)';
-            ctx.beginPath();
-            ctx.ellipse(this.width / 2, this.height - 5, this.width / 2 + 5, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
+                // Walking animation for feet
+                const footCycle = this.animationFrame * 0.6;
+                const footAmpX = 8;
+                const footAmpY = 5;
 
-            // 1. FEET (Walking animation underneath the horizontal body)
-            const legCycle = this.animationFrame * 0.5;
-            const leftLegOffset = Math.sin(legCycle) * 12;
-            const rightLegOffset = Math.sin(legCycle + Math.PI) * 12;
+                const leftFootX = Math.sin(footCycle) * footAmpX;
+                const leftFootY = Math.abs(Math.cos(footCycle)) * -footAmpY;
 
-            this.drawPigeonFoot(ctx, s * 1.5, 5.5 * s + Math.max(0, leftLegOffset), s, feetColor);
-            this.drawPigeonFoot(ctx, s * 3.5, 5.5 * s + Math.max(0, rightLegOffset), s, feetColor);
+                const rightFootX = Math.sin(footCycle + Math.PI) * footAmpX;
+                const rightFootY = Math.abs(Math.cos(footCycle + Math.PI)) * -footAmpY;
 
-            // 2. BODY (Horizontal Egg Shape)
-            const bodyGrad = ctx.createLinearGradient(0, 2 * s, this.width, 5 * s);
-            bodyGrad.addColorStop(0, bodyColor);
-            bodyGrad.addColorStop(1, bellyColor);
-
-            ctx.fillStyle = bodyGrad;
-            ctx.beginPath();
-            // Draw a more horizontal teardrop/egg shape
-            ctx.ellipse(this.width / 2 - s * 0.5, 3.5 * s, 2.5 * s, 2 * s, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 3. TAIL FEATHERS (Pointier and more pronounced)
-            ctx.fillStyle = bodyColor;
-            ctx.beginPath();
-            // Main tail spike
-            ctx.moveTo(s, 2.8 * s);
-            ctx.lineTo(-s * 0.8, 2.2 * s);
-            ctx.lineTo(0, 3.5 * s);
-            // Secondary tail spike
-            ctx.moveTo(s * 0.5, 3.2 * s);
-            ctx.lineTo(-s * 0.6, 3.8 * s);
-            ctx.lineTo(s * 0.8, 4.2 * s);
-            ctx.closePath();
-            ctx.fill();
-
-            // 4. WINGS (Resting on side)
-            ctx.fillStyle = '#6d7985'; // Slightly darker for wing
-            ctx.beginPath();
-            ctx.ellipse(this.width / 2 - s, 3.5 * s, 1.8 * s, 1.2 * s, 0.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 5. NECK & HEAD (Offset to the right for profile view)
-            const headX = this.width - s * 1.5 + bobX;
-            const headY = 1.5 * s - bobY;
-
-            // Neck Iridescence
-            ctx.fillStyle = neckColor;
-            ctx.beginPath();
-            ctx.ellipse(headX - s * 0.5, headY + s, s * 0.8, s * 1.2, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Head
-            ctx.fillStyle = bodyColor;
-            ctx.beginPath();
-            ctx.arc(headX, headY, 1.8 * s, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 6. BEANIE (Profile view)
-            const beanieColor = '#FF6B6B';
-            ctx.fillStyle = beanieColor;
-            // Main cap
-            ctx.beginPath();
-            ctx.arc(headX, headY - s * 0.5, 2 * s, Math.PI * 1.1, Math.PI * 1.9);
-            ctx.fill();
-            // Brim
-            ctx.save();
-            ctx.translate(headX, headY - s * 0.5);
-            ctx.rotate(-0.1);
-            this.drawRoundedPart(ctx, -2 * s, -0.5 * s, 4 * s, 0.8 * s, s * 0.3);
-            ctx.restore();
-            // Pom-pom
-            ctx.beginPath();
-            ctx.arc(headX - s * 0.5, headY - 2.8 * s, 0.6 * s, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 7. BEAK (Sticking out to the right)
-            ctx.fillStyle = '#444';
-            ctx.beginPath();
-            ctx.moveTo(headX + 1.2 * s, headY);
-            ctx.lineTo(headX + 2.5 * s, headY + 0.2 * s);
-            ctx.lineTo(headX + 1.2 * s, headY + 0.6 * s);
-            ctx.closePath();
-            ctx.fill();
-            // Cere
-            ctx.fillStyle = '#eee';
-            ctx.beginPath();
-            ctx.arc(headX + 1.3 * s, headY + 0.1 * s, 0.3 * s, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 8. EYE (Single eye for side profile)
-            if (this.isBlinking) {
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 2;
+                // Draw shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
                 ctx.beginPath();
-                ctx.moveTo(headX + 0.2 * s, headY - 0.2 * s);
-                ctx.lineTo(headX + 0.8 * s, headY - 0.2 * s);
-                ctx.stroke();
+                ctx.ellipse(centerX, this.height - 5, this.width / 2 + 5, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw Pigeon
+                // 1. Feet (underneath body)
+                ctx.drawImage(this.images.leftFoot, centerX - size / 2 + leftFootX, centerY - size / 2 + leftFootY, size, size);
+                ctx.drawImage(this.images.rightFoot, centerX - size / 2 + rightFootX, centerY - size / 2 + rightFootY, size, size);
+
+                // 2. Body (bobbing)
+                const bodyX = centerX - size / 2 + bobX;
+                const bodyY = centerY - size / 2 - bobY;
+                ctx.drawImage(this.images.body, bodyX, bodyY, size, size);
+
+                // 3. Fedora (Drawn on top of the head)
+                const hatX = bodyX + size * 0.63; // Estimating head position
+                const hatY = bodyY + size * 0.21;
+
+                ctx.save();
+                ctx.translate(hatX, hatY);
+                ctx.rotate(-0.1); // Slight tilt for style
+
+                // Fedora Brim
+                ctx.fillStyle = '#2d3436';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, size * 0.18, size * 0.05, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Fedora Crown
+                this.drawRoundedPart(ctx, -size * 0.1, -size * 0.15, size * 0.2, size * 0.15, size * 0.03);
+
+                // Ribbon/Band
+                ctx.fillStyle = '#636e72';
+                ctx.fillRect(-size * 0.1, -size * 0.05, size * 0.2, size * 0.03);
+
+                ctx.restore();
+
             } else {
+                // Fallback while loading (Legacy drawing logic)
+                const s = this.width / 5; // Scale unit
+                const bodyColor = '#808e9b';
+                const feetColor = '#ff7f50';
+
+                // Head bobbing
+                const bobX = Math.cos(this.animationFrame * 0.5) * 3;
+                const bobY = Math.abs(Math.sin(this.animationFrame * 0.5)) * 2;
+
+                // Draw shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.beginPath();
+                ctx.ellipse(this.width / 2, this.height - 5, this.width / 2 + 5, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Feet
+                const legCycle = this.animationFrame * 0.5;
+                const leftLegOffset = Math.sin(legCycle) * 12;
+                const rightLegOffset = Math.sin(legCycle + Math.PI) * 12;
+
+                this.drawPigeonFoot(ctx, s * 1.5, 5.5 * s + Math.max(0, leftLegOffset), s, feetColor);
+                this.drawPigeonFoot(ctx, s * 3.5, 5.5 * s + Math.max(0, rightLegOffset), s, feetColor);
+
+                // Body
+                ctx.fillStyle = bodyColor;
+                ctx.beginPath();
+                ctx.ellipse(this.width / 2 - s * 0.5, 3.5 * s, 2.5 * s, 2 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Head
+                const headX = this.width - s * 1.5 + bobX;
+                const headY = 1.5 * s - bobY;
+                ctx.fillStyle = bodyColor;
+                ctx.beginPath();
+                ctx.arc(headX, headY, 1.8 * s, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Eye
                 ctx.fillStyle = '#000';
                 ctx.beginPath();
                 ctx.arc(headX + 0.5 * s, headY - 0.2 * s, 0.5 * s, 0, Math.PI * 2);
                 ctx.fill();
-                // Shine
-                ctx.fillStyle = '#FFF';
-                ctx.beginPath();
-                ctx.arc(headX + 0.4 * s, headY - 0.3 * s, 0.15 * s, 0, Math.PI * 2);
-                ctx.fill();
             }
-
-            // Blush
-            ctx.fillStyle = 'rgba(255, 107, 107, 0.2)';
-            ctx.beginPath();
-            ctx.arc(headX + 0.6 * s, headY + 0.4 * s, 0.4 * s, 0, Math.PI * 2);
-            ctx.fill();
 
             ctx.restore();
         } catch (e) {
             logError(e);
         }
     }
+
 
     drawPigeonFoot(ctx, x, y, s, color) {
         ctx.fillStyle = color;

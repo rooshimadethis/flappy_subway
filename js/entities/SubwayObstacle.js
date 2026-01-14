@@ -42,46 +42,164 @@ export default class SubwayObstacle {
 
     draw(ctx) {
         ctx.save();
+        ctx.translate(this.x, this.y);
 
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(this.x, this.y, this.width, this.height);
+        const w = this.width;
+        const h = this.height;
 
         if (this.type === 'train') {
-            // Roof details
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, 10);
+            // Main Body (Subway Car Front)
+            const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
+            bodyGrad.addColorStop(0, '#7f8c8d');
+            bodyGrad.addColorStop(0.5, '#bdc3c7');
+            bodyGrad.addColorStop(1, '#7f8c8d');
 
-            // Windows along the side
-            ctx.fillStyle = '#34495E';
-            const windowHeight = 15;
-            for (let wy = this.y + 25; wy < this.y + this.height - 25; wy += 30) {
-                ctx.fillRect(this.x + 8, wy, this.width - 16, windowHeight);
-            }
+            ctx.fillStyle = bodyGrad;
+            this.drawRoundedPart(ctx, 0, 0, w, h, 12);
+            ctx.fill();
 
-            // Front lights
-            ctx.fillStyle = '#F1C40F';
-            ctx.fillRect(this.x + 5, this.y + this.height - 12, 8, 8);
-            ctx.fillRect(this.x + this.width - 13, this.y + this.height - 12, 8, 8);
+            // Windshield
+            ctx.fillStyle = '#2c3e50';
+            this.drawRoundedPart(ctx, 6, 15, w - 12, h * 0.4, 4);
+            ctx.fill();
+
+            // Windshield Sheen/Reflection
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.moveTo(8, 17);
+            ctx.lineTo(w - 20, 17);
+            ctx.lineTo(8, 17 + h * 0.3);
+            ctx.closePath();
+            ctx.fill();
+
+            // Digital Destination Board
+            ctx.fillStyle = '#000';
+            ctx.fillRect(w / 2 - 15, 4, 30, 8);
+            ctx.fillStyle = '#f1c40f';
+            ctx.font = 'bold 6px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('CITY', w / 2, 10);
+
+            // Headlights
+            ctx.fillStyle = '#ecf0f1';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#f1c40f';
+            // Left light
+            ctx.beginPath();
+            ctx.arc(12, h - 15, 5, 0, Math.PI * 2);
+            ctx.fill();
+            // Right light
+            ctx.beginPath();
+            ctx.arc(w - 12, h - 15, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Grill/Bumper area
+            ctx.fillStyle = '#34495e';
+            ctx.fillRect(w * 0.2, h - 10, w * 0.6, 6);
+
+            // Side lines for depth
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(2, 2, w - 4, h - 4);
+
         } else if (this.type === 'barrier') {
-            ctx.fillStyle = '#333';
-            ctx.fillRect(this.x, this.y + 5, this.width, 6);
-            ctx.fillRect(this.x, this.y + 25, this.width, 6);
-            // Legs
-            ctx.fillRect(this.x + 5, this.y, 4, this.height);
-            ctx.fillRect(this.x + this.width - 9, this.y, 4, this.height);
+            // Draw Legs
+            ctx.fillStyle = '#2c3e50';
+            ctx.fillRect(8, 0, 4, h);
+            ctx.fillRect(w - 12, 0, 4, h);
+
+            // Horizontal Boards with Stripes
+            const boardWidth = w;
+            const boardHeight = 15;
+
+            const drawBoard = (y) => {
+                ctx.save();
+                ctx.translate(0, y);
+                // Background
+                ctx.fillStyle = '#f1c40f'; // Safety Yellow
+                ctx.fillRect(0, 0, boardWidth, boardHeight);
+
+                // Stripes
+                ctx.fillStyle = '#2c3e50';
+                for (let i = -20; i < boardWidth; i += 20) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i + 10, 0);
+                    ctx.lineTo(i + 20, boardHeight);
+                    ctx.lineTo(i + 10, boardHeight);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Board border
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(0, 0, boardWidth, boardHeight);
+                ctx.restore();
+            };
+
+            drawBoard(15);
+            drawBoard(45);
+
+            // Warning Light on top
+            ctx.fillStyle = '#e67e22';
+            ctx.fillRect(w / 2 - 4, 5, 8, 10);
+            ctx.fillStyle = '#f1c40f';
+            ctx.beginPath();
+            ctx.arc(w / 2, 8, 3, 0, Math.PI * 2);
+            ctx.fill();
+
         } else if (this.type === 'sign') {
-            ctx.fillStyle = '#2C3E50';
-            ctx.fillRect(this.x + this.width / 2 - 2, this.y, 4, this.height);
-            ctx.fillStyle = '#3498DB';
-            ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, 20);
-            ctx.strokeRect(this.x + 5, this.y + 5, this.width - 10, 20);
+            // Pole
+            const poleGrad = ctx.createLinearGradient(w / 2 - 3, 0, w / 2 + 3, 0);
+            poleGrad.addColorStop(0, '#7f8c8d');
+            poleGrad.addColorStop(0.5, '#ecf0f1');
+            poleGrad.addColorStop(1, '#7f8c8d');
+
+            ctx.fillStyle = poleGrad;
+            ctx.fillRect(w / 2 - 3, 0, 6, h);
+
+            // Round Sign
+            const radius = 22;
+            const centerX = w / 2;
+            const centerY = 25;
+
+            // Outer ring
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Inner white bar (No Entry style)
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(centerX - 15, centerY - 4, 30, 8);
+
+            // Highlight
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.beginPath();
+            ctx.arc(centerX - 5, centerY - 5, 5, 0, Math.PI * 2);
+            ctx.fill();
         }
 
         ctx.restore();
+    }
+
+    drawRoundedPart(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
     }
 
     adjustBrightness(color, percent) {
