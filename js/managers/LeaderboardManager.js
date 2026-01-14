@@ -117,7 +117,8 @@ export default class LeaderboardManager {
 
             // Show success styling
             this.submitBtn.textContent = "Submitted! ✅";
-            this.submitBtn.style.background = "#27AE60";
+            this.submitBtn.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+            this.submitBtn.style.boxShadow = "0 4px 0 #065f46, 0 10px 30px rgba(16, 185, 129, 0.3)";
 
             // Disable input after submission
             this.nameInput.disabled = true;

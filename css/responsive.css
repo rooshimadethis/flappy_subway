@@ -121,25 +121,31 @@
         font-size: 32px;
     }
 
-    .start-button {
-        padding: 10px 30px;
-        font-size: 16px;
+    .start-button,
+    .restart-button,
+    .view-leaderboard-button,
+    .submit-score-button,
+    .fullscreen-button {
+        padding: 10px 24px;
+        font-size: 14px;
+        border-radius: 12px;
+        box-shadow: 0 3px 0 #3730a3, 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .start-button:active,
+    .restart-button:active,
+    .view-leaderboard-button:active,
+    .submit-score-button:active,
+    .fullscreen-button:active {
+        transform: translateY(3px);
     }
 
     /* Leaderboard Fixes for Mobile Landscape */
     .leaderboard-container {
         width: 95%;
-        max-height: 95vh;
-        /* Use almost full height */
-        padding: 1rem;
-        /* Reduce padding */
-    }
-
-    .leaderboard-modal {
-        align-items: flex-start;
-        /* Start from top */
-        padding-top: 10px;
-        /* Small buffer from top edge */
+        max-height: 98vh;
+        padding: 1.2rem;
+        border-radius: 20px;
     }
 
     .leaderboard-header {
@@ -149,6 +155,13 @@
 
     .leaderboard-header h2 {
         font-size: 1.2rem;
+    }
+
+    .player-name-input {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        width: 200px;
+        border-radius: 12px;
     }
 
     /* ===== OPTIMIZATIONS FOR VISIBILITY ===== */
@@ -176,12 +189,13 @@
     }
 
     .ingame-fullscreen-btn {
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
         margin-left: 10px;
-        border: none;
-        background: transparent;
-        color: rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
     }
 }

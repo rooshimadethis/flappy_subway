@@ -279,7 +279,6 @@ class DualGame {
         document.getElementById('finalFlappyScore').textContent = this.state.flappyScore;
         document.getElementById('finalSubwayScore').textContent = this.state.subwayScore;
         document.getElementById('finalTotalScore').textContent = this.state.getTotalScore();
-        document.getElementById('finalHighScore').textContent = this.state.highScore;
         document.getElementById('gameOverScreen').classList.remove('hidden');
     }
 

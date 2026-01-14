@@ -20,37 +20,100 @@ body {
 }
 
 body {
-    /* Fallback to system fonts for guaranteed rendering */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Fallback to system fonts */
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+    background: #0f172a;
+    /* Deep dark slate */
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Prevent pull-to-refresh on mobile */
     overscroll-behavior: none;
+    color: #f8fafc;
+    overflow: hidden;
 }
 
-/* Animated background particles */
-body::before {
-    content: '';
+/* === Dynamic Mesh Background === */
+.mesh-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.mesh-blob {
     position: absolute;
-    width: 200%;
-    height: 200%;
-    background-image:
-        radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px, 80px 80px;
-    background-position: 0 0, 40px 40px;
-    animation: particleFloat 20s linear infinite;
-    pointer-events: none;
+    width: 65vmax;
+    height: 65vmax;
+    filter: blur(80px);
+    opacity: 0.5;
+    border-radius: 50%;
+    animation: meshFloat 25s infinite alternate ease-in-out;
 }
 
-@keyframes particleFloat {
+.blob-1 {
+    background: #6366f1;
+    /* Indigo */
+    top: -20%;
+    left: -10%;
+    animation-duration: 22s;
+}
+
+.blob-2 {
+    background: #ec4899;
+    /* Pink */
+    bottom: -15%;
+    right: -10%;
+    animation-duration: 28s;
+    animation-delay: -5s;
+}
+
+.blob-3 {
+    background: #0ea5e9;
+    /* Sky Blue */
+    top: 25%;
+    right: 5%;
+    width: 45vmax;
+    height: 45vmax;
+    animation-duration: 20s;
+    animation-delay: -3s;
+}
+
+@keyframes meshFloat {
     0% {
-        transform: translate(0, 0);
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+
+    33% {
+        transform: translate(12%, 18%) scale(1.15) rotate(70deg);
+    }
+
+    66% {
+        transform: translate(-8%, 12%) scale(0.9) rotate(-50deg);
     }
 
     100% {
-        transform: translate(-50px, -50px);
+        transform: translate(0, 0) scale(1) rotate(0deg);
     }
+}
+
+/* Subtle scanlines for arcade feel */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg,
+            rgba(255, 0, 0, 0.02),
+            rgba(0, 255, 0, 0.01),
+            rgba(0, 0, 255, 0.02));
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.25;
 }
