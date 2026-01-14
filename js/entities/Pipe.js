@@ -21,45 +21,40 @@ export default class Pipe {
             return;
         }
 
-        // Safe Gradient Creation with Caching
-        if (!this.gradient) {
-            try {
-                // Create gradient relative to 0,0 since we will translate
-                this.gradient = ctx.createLinearGradient(0, 0, CONFIG.flappy.pipes.width, 0);
-                this.gradient.addColorStop(0, '#229954');
-                this.gradient.addColorStop(0.5, '#2ECC71');
-                this.gradient.addColorStop(1, '#27AE60');
-            } catch (e) {
-                this.gradient = '#2ECC71';
-            }
-        }
-
         ctx.save();
-        ctx.translate(this.x, 0); // Translate to pipe position
+        ctx.translate(this.x, 0);
 
-        ctx.fillStyle = this.gradient;
-        const borderColor = '#1E8449';
+        const pipeColor = '#2ECC71';
+        const borderColor = '#000';
+        const borderWidth = 3;
+
+        ctx.fillStyle = pipeColor;
         ctx.strokeStyle = borderColor;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = borderWidth;
 
-        // Draw relative to (0,0)
-        ctx.fillRect(0, 0, CONFIG.flappy.pipes.width, this.topHeight);
-        ctx.strokeRect(0, 0, CONFIG.flappy.pipes.width, this.topHeight);
+        // Top Pipe
+        ctx.fillRect(0, 0, this.width, this.topHeight);
+        ctx.strokeRect(0, 0, this.width, this.topHeight);
 
-        ctx.fillRect(-5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
-        ctx.strokeRect(-5, this.topHeight - 30, CONFIG.flappy.pipes.width + 10, 30);
+        // Top Pipe Cap
+        ctx.fillRect(-8, this.topHeight - 30, this.width + 16, 30);
+        ctx.strokeRect(-8, this.topHeight - 30, this.width + 16, 30);
 
         const bottomY = this.topHeight + CONFIG.flappy.pipes.gap;
-        const bottomHeight = CONFIG.flappy.canvas.height - bottomY - 100;
-        ctx.fillRect(0, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
-        ctx.strokeRect(0, bottomY, CONFIG.flappy.pipes.width, bottomHeight);
+        const bottomHeight = CONFIG.flappy.canvas.height - bottomY;
 
-        ctx.fillRect(-5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
-        ctx.strokeRect(-5, bottomY, CONFIG.flappy.pipes.width + 10, 30);
+        // Bottom Pipe
+        ctx.fillRect(0, bottomY, this.width, bottomHeight);
+        ctx.strokeRect(0, bottomY, this.width, bottomHeight);
 
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.fillRect(10, 0, 10, this.topHeight - 30);
-        ctx.fillRect(10, bottomY + 30, 10, bottomHeight - 30);
+        // Bottom Pipe Cap
+        ctx.fillRect(-8, bottomY, this.width + 16, 30);
+        ctx.strokeRect(-8, bottomY, this.width + 16, 30);
+
+        // Highlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.fillRect(8, 0, 8, this.topHeight - 30);
+        ctx.fillRect(8, bottomY + 30, 8, bottomHeight - 30);
 
         ctx.restore();
     }

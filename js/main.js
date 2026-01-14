@@ -67,25 +67,16 @@ class DualGame {
     }
 
     initSharedAssets() {
-        // Cache sky gradient
-        this.skyGradient = this.flappyCtx.createLinearGradient(0, 0, 0, CONFIG.flappy.canvas.height);
-        this.skyGradient.addColorStop(0, '#87CEEB');
-        this.skyGradient.addColorStop(0.7, '#4A90E2');
-        this.skyGradient.addColorStop(1, '#F4A460');
+        // Flat sky color
+        this.skyColor = '#87CEEB';
 
-        // Cache subway gradient
-        this.subwayGradient = this.subwayCtx.createLinearGradient(0, 0, 0, CONFIG.subway.canvas.height);
-        this.subwayGradient.addColorStop(0, '#2C3E50');
-        this.subwayGradient.addColorStop(0.5, '#34495E');
-        this.subwayGradient.addColorStop(1, '#1A252F');
+        // Flat subway background
+        this.subwayBgColor = '#2C3E50';
 
-        // Cache flappy ground gradient
+        // Flat ground color
         const groundHeight = 100;
-        const groundY = CONFIG.flappy.canvas.height - groundHeight;
-        this.groundGradient = this.flappyCtx.createLinearGradient(0, groundY, 0, CONFIG.flappy.canvas.height);
-        this.groundGradient.addColorStop(0, '#8B7355');
-        this.groundGradient.addColorStop(1, '#DEB887');
-        this.groundY = groundY;
+        this.groundColor = '#8B7355';
+        this.groundY = CONFIG.flappy.canvas.height - groundHeight;
     }
 
     setupEventListeners() {
@@ -140,6 +131,7 @@ class DualGame {
 
         document.addEventListener('keydown', (e) => {
             if (document.activeElement.tagName === 'INPUT') return;
+            if (this.leaderboard.isVisible()) return;
 
             if (!this.state.isPlaying || this.state.isGameOver) {
                 if (e.code === 'Space' || e.code === 'Enter') {
@@ -175,6 +167,7 @@ class DualGame {
 
         document.addEventListener('touchstart', (e) => {
             if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+            if (this.leaderboard.isVisible()) return;
 
             // Handle Game Start/Restart on Tap
             if (!this.state.isPlaying || this.state.isGameOver) {
@@ -318,8 +311,7 @@ class DualGame {
             }
         }
 
-        const groundY = CONFIG.flappy.canvas.height - 100;
-        if (this.bird.checkCollision(this.pipes, groundY)) {
+        if (this.bird.checkCollision(this.pipes, this.groundY)) {
             this.gameOver('💀 Died in Flappy Bird!');
             return;
         }
@@ -379,8 +371,8 @@ class DualGame {
         try {
             this.flappyCtx.clearRect(0, 0, CONFIG.flappy.canvas.width, CONFIG.flappy.canvas.height);
 
-            // Use cached sky gradient
-            this.flappyCtx.fillStyle = this.skyGradient;
+            // Use flat sky color
+            this.flappyCtx.fillStyle = this.skyColor;
             this.flappyCtx.fillRect(0, 0, CONFIG.flappy.canvas.width, CONFIG.flappy.canvas.height);
 
             for (let pipe of this.pipes) {
@@ -392,8 +384,8 @@ class DualGame {
 
             this.subwayCtx.clearRect(0, 0, CONFIG.subway.canvas.width, CONFIG.subway.canvas.height);
 
-            // Use cached subway gradient
-            this.subwayCtx.fillStyle = this.subwayGradient;
+            // Use flat subway color
+            this.subwayCtx.fillStyle = this.subwayBgColor;
             this.subwayCtx.fillRect(0, 0, CONFIG.subway.canvas.width, CONFIG.subway.canvas.height);
 
             this.drawSubwayLanes();
@@ -413,47 +405,34 @@ class DualGame {
     }
 
     drawFlappyGround() {
-        const groundHeight = 100;
+        this.flappyCtx.fillStyle = this.groundColor;
+        this.flappyCtx.fillRect(0, this.groundY, CONFIG.flappy.canvas.width, CONFIG.flappy.canvas.height - this.groundY);
 
-        this.flappyCtx.fillStyle = this.groundGradient;
-        this.flappyCtx.fillRect(0, this.groundY, CONFIG.flappy.canvas.width, groundHeight);
-
+        // Retro grass line
         this.flappyCtx.fillStyle = '#228B22';
-        for (let i = 0; i < CONFIG.flappy.canvas.width; i += 20) {
-            this.flappyCtx.fillRect(i, this.groundY, 10, 5);
-        }
+        this.flappyCtx.fillRect(0, this.groundY, CONFIG.flappy.canvas.width, 10);
     }
 
     drawSubwayLanes() {
         const laneWidth = CONFIG.subway.player.laneWidth;
-        const startX = (CONFIG.subway.canvas.width - laneWidth * 3) / 2;
+        const totalRoadWidth = laneWidth * 3;
+        const startX = (CONFIG.subway.canvas.width - totalRoadWidth) / 2;
 
-        this.subwayCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-        this.subwayCtx.lineWidth = 3;
+        // Draw Road Base
+        this.subwayCtx.fillStyle = '#1a1a1a';
+        this.subwayCtx.fillRect(startX, 0, totalRoadWidth, CONFIG.subway.canvas.height);
 
-        for (let i = 0; i <= 3; i++) {
-            const x = startX + i * laneWidth;
-            this.subwayCtx.beginPath();
-            this.subwayCtx.moveTo(x, 0);
-            this.subwayCtx.lineTo(x, CONFIG.subway.canvas.height);
-            this.subwayCtx.stroke();
-        }
+        // Draw Road Edges (Walls)
+        this.subwayCtx.fillStyle = '#333';
+        this.subwayCtx.fillRect(startX - 4, 0, 4, CONFIG.subway.canvas.height);
+        this.subwayCtx.fillRect(startX + totalRoadWidth, 0, 4, CONFIG.subway.canvas.height);
 
-        const dashOffset = (Date.now() * 0.3) % 40;
-        this.subwayCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        this.subwayCtx.lineWidth = 2;
-        this.subwayCtx.setLineDash([20, 20]);
-
+        // Draw Lane Dividers
+        this.subwayCtx.fillStyle = 'rgba(255, 255, 255, 0.15)';
         for (let i = 1; i < 3; i++) {
             const x = startX + i * laneWidth;
-            this.subwayCtx.beginPath();
-            this.subwayCtx.lineDashOffset = -dashOffset;
-            this.subwayCtx.moveTo(x, 0);
-            this.subwayCtx.lineTo(x, CONFIG.subway.canvas.height);
-            this.subwayCtx.stroke();
+            this.subwayCtx.fillRect(x - 2, 0, 4, CONFIG.subway.canvas.height);
         }
-
-        this.subwayCtx.setLineDash([]);
     }
 
     animate(timestamp) {

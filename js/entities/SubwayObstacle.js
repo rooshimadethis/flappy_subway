@@ -4,8 +4,11 @@ export default class SubwayObstacle {
     constructor(lane, type) {
         this.lane = lane;
         this.type = type;
-        this.width = 60;
-        this.height = 80;
+
+        const dims = CONFIG.subway.obstacles.dimensions[type] || { width: 50, height: 50 };
+        this.width = dims.width;
+        this.height = dims.height;
+
         this.x = this.getLaneX(lane);
         this.y = -this.height;
         this.speed = CONFIG.subway.obstacles.speed;
@@ -39,48 +42,43 @@ export default class SubwayObstacle {
 
     draw(ctx) {
         ctx.save();
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.fillRect(this.x + 10, this.y + 10, this.width, this.height);
-
-        const depth = 15;
-
-        // Use pre-calculated colors
-        ctx.fillStyle = this.darkColor;
-        ctx.beginPath();
-        ctx.moveTo(this.x + this.width, this.y);
-        ctx.lineTo(this.x + this.width + depth, this.y - depth);
-        ctx.lineTo(this.x + this.width + depth, this.y + this.height - depth);
-        ctx.lineTo(this.x + this.width, this.y + this.height);
-        ctx.fill();
-
-        ctx.fillStyle = this.lightColor;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x + depth, this.y - depth);
-        ctx.lineTo(this.x + this.width + depth, this.y - depth);
-        ctx.lineTo(this.x + this.width, this.y);
-        ctx.fill();
 
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 
-        if (this.type === 'train') {
-            ctx.fillStyle = '#34495E';
-            ctx.fillRect(this.x + 5, this.y + 10, this.width - 10, 20);
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
 
+        if (this.type === 'train') {
+            // Roof details
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, 10);
+
+            // Windows along the side
+            ctx.fillStyle = '#34495E';
+            const windowHeight = 15;
+            for (let wy = this.y + 25; wy < this.y + this.height - 25; wy += 30) {
+                ctx.fillRect(this.x + 8, wy, this.width - 16, windowHeight);
+            }
+
+            // Front lights
             ctx.fillStyle = '#F1C40F';
-            ctx.beginPath();
-            ctx.arc(this.x + 10, this.y + this.height - 15, 5, 0, Math.PI * 2);
-            ctx.arc(this.x + this.width - 10, this.y + this.height - 15, 5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillRect(this.x + 5, this.y + this.height - 12, 8, 8);
+            ctx.fillRect(this.x + this.width - 13, this.y + this.height - 12, 8, 8);
         } else if (this.type === 'barrier') {
             ctx.fillStyle = '#333';
-            ctx.beginPath();
-            ctx.moveTo(this.x, this.y + 20);
-            ctx.lineTo(this.x + this.width, this.y + 40);
-            ctx.lineTo(this.x + this.width, this.y + 60);
-            ctx.lineTo(this.x, this.y + 40);
-            ctx.fill();
+            ctx.fillRect(this.x, this.y + 5, this.width, 6);
+            ctx.fillRect(this.x, this.y + 25, this.width, 6);
+            // Legs
+            ctx.fillRect(this.x + 5, this.y, 4, this.height);
+            ctx.fillRect(this.x + this.width - 9, this.y, 4, this.height);
+        } else if (this.type === 'sign') {
+            ctx.fillStyle = '#2C3E50';
+            ctx.fillRect(this.x + this.width / 2 - 2, this.y, 4, this.height);
+            ctx.fillStyle = '#3498DB';
+            ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, 20);
+            ctx.strokeRect(this.x + 5, this.y + 5, this.width - 10, 20);
         }
 
         ctx.restore();

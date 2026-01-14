@@ -6,223 +6,165 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    /* Higher than game-over-screen (1000) */
-    transition: opacity 0.3s ease;
 }
 
 .leaderboard-modal.hidden {
     display: none !important;
-    pointer-events: none;
 }
 
 .leaderboard-container {
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(25px) saturate(180%);
-    padding: 2.5rem;
-    border-radius: 32px;
+    background: #000;
+    padding: 2rem;
+    border: 4px solid #fff;
     width: 90%;
-    max-width: 550px;
-    box-shadow:
-        0 25px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    max-width: 500px;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .leaderboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 4px solid #fff;
+    padding-bottom: 0.5rem;
 }
 
 .leaderboard-header h2 {
     margin: 0;
-    color: #fff;
-    font-weight: 950;
-    font-size: 2rem;
-    letter-spacing: 1px;
-    background: linear-gradient(to bottom, #fff, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #ffd700;
+    font-size: 16px;
 }
 
 .close-leaderboard {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 1.5rem;
-    color: #94a3b8;
+    background: #000;
+    border: 2px solid #fff;
+    font-size: 1.2rem;
+    color: #fff;
     cursor: pointer;
-    line-height: 1;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease;
 }
 
 .close-leaderboard:hover {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.3);
-    transform: rotate(90deg);
+    background: #ff4b2b;
+    border-color: #ff4b2b;
 }
 
 .leaderboard-list {
     overflow-y: auto;
     flex-grow: 1;
-    padding-right: 10px;
-}
-
-/* Custom Scrollbar */
-.leaderboard-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.leaderboard-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-
-.leaderboard-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
 }
 
 .leaderboard-entry {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-weight: 600;
-    color: #cbd5e1;
-    transition: background 0.2s;
-}
-
-.leaderboard-entry:hover {
-    background: rgba(255, 255, 255, 0.02);
-}
-
-.leaderboard-entry:nth-child(1) {
-    background: rgba(255, 215, 0, 0.1);
-    color: #ffd700;
-    border-radius: 12px;
-    border-bottom: none;
-}
-
-.leaderboard-entry:nth-child(2) {
-    background: rgba(226, 232, 240, 0.05);
-    color: #e2e8f0;
-    border-radius: 12px;
-    border-bottom: none;
-    margin-top: 5px;
-}
-
-.leaderboard-entry:nth-child(3) {
-    background: rgba(205, 127, 50, 0.05);
-    color: #cd7f32;
-    border-radius: 12px;
-    border-bottom: none;
-    margin-top: 5px;
+    padding: 0.8rem;
+    border-bottom: 2px solid #333;
+    font-size: 10px;
 }
 
 .leaderboard-rank {
     width: 40px;
-    font-weight: 900;
-    font-size: 1.1rem;
+    color: #aaa;
+}
+
+.leaderboard-entry:nth-child(1) .leaderboard-rank {
+    color: #ffd700;
+}
+
+.leaderboard-entry:nth-child(2) .leaderboard-rank {
+    color: #c0c0c0;
+}
+
+.leaderboard-entry:nth-child(3) .leaderboard-rank {
+    color: #cd7f32;
 }
 
 .leaderboard-name {
     flex-grow: 1;
     text-align: left;
+    color: #fff;
 }
 
 .leaderboard-score {
-    font-weight: 800;
-    color: #fff;
-    font-size: 1.2rem;
+    color: #ffd700;
 }
 
 /* Leaderboard Tabs */
 .leaderboard-tabs {
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    justify-content: space-around;
+    gap: 15px;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
 }
 
 .tab-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #94a3b8;
-    padding: 10px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
-}
-
-.tab-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: #000;
+    border: 2px solid #fff;
     color: #fff;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 10px;
+    font-family: inherit;
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    color: white;
-    border-color: transparent;
-    box-shadow:
-        0 4px 0 #3730a3,
-        0 10px 20px rgba(99, 102, 241, 0.3);
+    background: #4f46e5;
+    transform: translate(2px, 2px);
+    box-shadow: none;
 }
 
 /* Leaderboard Input Section */
 .leaderboard-section {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     display: flex;
-    gap: 12px;
+    flex-direction: row;
+    gap: 10px;
     justify-content: center;
+    align-items: stretch;
 }
 
 .player-name-input {
-    padding: 16px 24px;
-    border-radius: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border: 4px solid #fff;
+    background: #000;
     color: #fff;
     font-family: inherit;
-    font-size: 1rem;
-    width: 250px;
-    text-align: center;
-    transition: all 0.3s ease;
+    font-size: 10px;
+    flex-grow: 1;
+    text-align: left;
+    height: 48px;
+    box-sizing: border-box;
+}
+
+.submit-score-button {
+    padding: 0 16px;
+    height: 48px;
+    min-height: 0 !important;
+    font-size: 10px;
+    flex-shrink: 0;
+    box-shadow: 4px 4px 0 #0b1120;
+    margin: 0;
 }
 
 .player-name-input:focus {
     outline: none;
-    border-color: #6366f1;
-    background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    border-color: #ffd700;
 }
 
-
-
 .submit-score-button:disabled {
-    background: #bdc3c7;
+    background: #666;
     cursor: not-allowed;
-    transform: none;
 }

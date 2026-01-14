@@ -9,7 +9,8 @@
         content="The ultimate multitasking challenge: Play Flappy Bird and Subway Surfers simultaneously!">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=2">
     <link rel="stylesheet" href="mobile-styles.css">
     <link rel="stylesheet" href="ios-styles.css">
@@ -100,12 +101,14 @@
                 <span class="button-text">START DUAL CHALLENGE</span>
                 <span class="button-icon">🚀</span>
             </button>
-            <button class="view-leaderboard-button" id="startScreenLeaderboardBtn" style="margin-top: 20px;">
-                LEADERBOARD 📜
-            </button>
-            <button class="fullscreen-button" id="fullscreenBtn">
-                📱 GO FULLSCREEN
-            </button>
+            <div class="start-screen-buttons">
+                <button class="view-leaderboard-button" id="startScreenLeaderboardBtn">
+                    LEADERBOARD 📜
+                </button>
+                <button class="fullscreen-button" id="fullscreenBtn">
+                    📱 FULLSCREEN
+                </button>
+            </div>
         </div>
 
         <!-- Game Over Screen -->
@@ -186,11 +189,11 @@
         <div class="leaderboard-container">
             <div class="leaderboard-header">
                 <h2>GLOBAL TOP 10</h2>
-                <div class="leaderboard-tabs">
-                    <button class="tab-btn active" id="tabThisWeek">This Week</button>
-                    <button class="tab-btn" id="tabAllTime">All Time</button>
-                </div>
                 <button class="close-leaderboard" id="closeLeaderboard">×</button>
+            </div>
+            <div class="leaderboard-tabs">
+                <button class="tab-btn active" id="tabThisWeek">This Week</button>
+                <button class="tab-btn" id="tabAllTime">All Time</button>
             </div>
             <div class="leaderboard-list" id="leaderboardList">
                 <div class="loading-spinner">Loading...</div>

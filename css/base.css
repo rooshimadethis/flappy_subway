@@ -20,19 +20,28 @@ body {
 }
 
 body {
-    /* Fallback to system fonts */
-    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-    background: #0f172a;
-    /* Deep dark slate */
+    /* Pixel font for retro feel */
+    font-family: 'Press Start 2P', cursive;
+    background: #000;
+    /* Classic black background */
     display: flex;
     justify-content: center;
     align-items: center;
     overscroll-behavior: none;
-    color: #f8fafc;
+    color: #fff;
     overflow: hidden;
 }
 
-/* === Dynamic Mesh Background === */
+.hidden {
+    display: none !important;
+}
+
+canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* === Retro Grid Background === */
 .mesh-background {
     position: fixed;
     top: 0;
@@ -41,65 +50,28 @@ body {
     height: 100%;
     z-index: -1;
     overflow: hidden;
+    background: linear-gradient(#1a1a1a 1px, transparent 1px),
+        linear-gradient(90deg, #1a1a1a 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridScroll 20s linear infinite;
 }
 
 .mesh-blob {
-    position: absolute;
-    width: 65vmax;
-    height: 65vmax;
-    filter: blur(80px);
-    opacity: 0.5;
-    border-radius: 50%;
-    animation: meshFloat 25s infinite alternate ease-in-out;
+    display: none;
+    /* Hide for true retro feel */
 }
 
-.blob-1 {
-    background: #6366f1;
-    /* Indigo */
-    top: -20%;
-    left: -10%;
-    animation-duration: 22s;
-}
-
-.blob-2 {
-    background: #ec4899;
-    /* Pink */
-    bottom: -15%;
-    right: -10%;
-    animation-duration: 28s;
-    animation-delay: -5s;
-}
-
-.blob-3 {
-    background: #0ea5e9;
-    /* Sky Blue */
-    top: 25%;
-    right: 5%;
-    width: 45vmax;
-    height: 45vmax;
-    animation-duration: 20s;
-    animation-delay: -3s;
-}
-
-@keyframes meshFloat {
-    0% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
+@keyframes gridScroll {
+    from {
+        background-position: 0 0;
     }
 
-    33% {
-        transform: translate(12%, 18%) scale(1.15) rotate(70deg);
-    }
-
-    66% {
-        transform: translate(-8%, 12%) scale(0.9) rotate(-50deg);
-    }
-
-    100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
+    to {
+        background-position: 0 40px;
     }
 }
 
-/* Subtle scanlines for arcade feel */
+/* CRT Scanlines and curvature effect */
 body::after {
     content: "";
     position: fixed;
@@ -108,12 +80,9 @@ body::after {
     width: 100%;
     height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%,
-            rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg,
-            rgba(255, 0, 0, 0.02),
-            rgba(0, 255, 0, 0.01),
-            rgba(0, 0, 255, 0.02));
-    background-size: 100% 3px, 3px 100%;
+            rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.25;
+    opacity: 0.3;
 }

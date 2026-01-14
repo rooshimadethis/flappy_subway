@@ -1,34 +1,34 @@
-/* Standardize all game buttons to the premium 3D look */
+/* Retro Pixel Buttons */
 .start-button,
 .restart-button,
 .submit-score-button,
 .view-leaderboard-button,
 .fullscreen-button {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: #4f46e5;
     color: white !important;
-    border: none !important;
-    padding: 0 32px;
-    height: 56px;
+    border: 4px solid #fff !important;
+    padding: 12px 24px;
+    height: auto;
+    min-height: 60px;
     box-sizing: border-box;
-    font-size: 18px;
-    font-weight: 800;
-    border-radius: 16px;
+    font-size: 14px;
+    /* Smaller for pixel font */
+    font-weight: normal;
+    border-radius: 0;
+    /* Sharp corners */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    box-shadow:
-        0 4px 0 #3730a3,
-        0 10px 30px rgba(99, 102, 241, 0.4);
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 6px 6px 0 #000;
+    transition: none;
+    /* Instant transitions for retro feel */
     font-family: inherit;
-    letter-spacing: 1.5px;
-    position: relative;
-    overflow: hidden;
     text-transform: uppercase;
     text-decoration: none;
     white-space: nowrap;
+    position: relative;
 }
 
 .start-button:hover,
@@ -36,11 +36,9 @@
 .submit-score-button:hover,
 .view-leaderboard-button:hover,
 .fullscreen-button:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 6px 0 #3730a3,
-        0 15px 40px rgba(99, 102, 241, 0.5);
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    background: #6366f1;
+    box-shadow: 4px 4px 0 #000;
+    transform: translate(2px, 2px);
 }
 
 .start-button:active,
@@ -48,43 +46,38 @@
 .submit-score-button:active,
 .view-leaderboard-button:active,
 .fullscreen-button:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 #3730a3, 0 5px 10px rgba(0, 0, 0, 0.2);
+    background: #3730a3;
+    box-shadow: 0 0 0 #000;
+    transform: translate(6px, 6px);
 }
 
 /* Button Variants */
 .submit-score-button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    box-shadow: 0 4px 0 #065f46, 0 10px 30px rgba(16, 185, 129, 0.3);
+    background: #059669;
 }
 
 .submit-score-button:hover {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-    box-shadow: 0 6px 0 #065f46, 0 15px 40px rgba(16, 185, 129, 0.4);
+    background: #10b981;
+}
+
+.submit-score-button:active {
+    background: #065f46;
 }
 
 .view-leaderboard-button {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    box-shadow: 0 4px 0 #5b21b6, 0 10px 30px rgba(139, 92, 246, 0.3);
+    background: #7c3aed;
 }
 
 .view-leaderboard-button:hover {
-    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
-    box-shadow: 0 6px 0 #5b21b6, 0 15px 40px rgba(139, 92, 246, 0.4);
+    background: #8b5cf6;
+}
+
+.view-leaderboard-button:active {
+    background: #5b21b6;
 }
 
 .fullscreen-button {
-    background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
-    box-shadow: 0 4px 0 #0f172a, 0 10px 30px rgba(71, 85, 105, 0.3);
-}
-
-.fullscreen-button:hover {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-    box-shadow: 0 6px 0 #0f172a, 0 15px 40px rgba(71, 85, 105, 0.4);
-}
-
-.start-screen .fullscreen-button {
-    margin-top: 20px;
+    background: #1e293b;
 }
 
 .button-text {
@@ -93,54 +86,28 @@
 }
 
 .button-icon {
-    font-size: 24px;
+    font-size: 20px;
     position: relative;
     z-index: 1;
-    animation: iconSpin 3s linear infinite;
-}
-
-@keyframes iconSpin {
-
-    0%,
-    90% {
-        transform: rotate(0deg);
-    }
-
-    95% {
-        transform: rotate(20deg);
-    }
-
-    100% {
-        transform: rotate(0deg);
-    }
 }
 
 .reset-score-button {
     position: absolute;
-    bottom: 30px;
-    left: 30px;
+    bottom: 20px;
+    left: 20px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.6);
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 0;
+    font-size: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
     font-family: inherit;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
     z-index: 1001;
 }
 
 .reset-score-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border-color: rgba(255, 255, 255, 0.6);
-    transform: translateY(-2px);
-}
-
-.reset-score-button:active {
-    transform: translateY(0);
+    background: #fff;
+    color: #000;
 }

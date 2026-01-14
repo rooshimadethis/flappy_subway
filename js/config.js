@@ -1,4 +1,3 @@
-// ===== DUAL GAME CONFIGURATION =====
 export const CONFIG = {
     flappy: {
         canvas: { width: 600, height: 800 },
@@ -31,11 +30,18 @@ export const CONFIG = {
         obstacles: {
             speed: 8,
             spawnInterval: 1200,
-            types: ['train', 'barrier', 'sign']
+            types: ['train', 'barrier', 'sign'],
+            dimensions: {
+                train: { width: 60, height: 80 },
+                barrier: { width: 60, height: 80 },
+                sign: { width: 60, height: 80 }
+            }
         },
         coins: {
             speed: 8,
-            spawnInterval: 800
+            spawnInterval: 800,
+            width: 40,
+            height: 40
         }
     }
 };

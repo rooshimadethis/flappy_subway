@@ -11,7 +11,14 @@ export default class Bird {
         this.wingAngle = 0;
         this.blinkTimer = 0;
         this.isBlinking = false;
-        this.cachedGradient = null;
+
+        // Load the pixel art bird
+        this.image = new Image();
+        this.image.src = 'assets/pixel_bird.png';
+        this.imageLoaded = false;
+        this.image.onload = () => {
+            this.imageLoaded = true;
+        };
     }
 
     jump() {
@@ -26,17 +33,6 @@ export default class Bird {
         // Update rotation
         this.rotation = Math.min(Math.max(this.velocity * 3, -25), 90);
 
-        this.wingAngle += 0.4 * dt;
-        this.blinkTimer += 1 * dt;
-        if (this.blinkTimer > 150 && Math.random() < 0.05) {
-            this.isBlinking = true;
-            this.blinkTimer = 0;
-        }
-        if (this.isBlinking && this.blinkTimer > 5) {
-            this.isBlinking = false;
-            this.blinkTimer = 0;
-        }
-
         if (this.y - this.radius < 0) {
             this.y = this.radius;
             this.velocity = 0;
@@ -49,117 +45,50 @@ export default class Bird {
             ctx.translate(this.x, this.y);
             ctx.rotate((this.rotation * Math.PI) / 180);
 
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = 5;
-
-            // Cache the bird body gradient
-            if (!this.cachedGradient) {
-                this.cachedGradient = ctx.createRadialGradient(-5, -5, 0, 0, 0, this.radius);
-                this.cachedGradient.addColorStop(0, '#FFE066');
-                this.cachedGradient.addColorStop(1, '#FFCC00');
-            }
-
-            ctx.fillStyle = this.cachedGradient;
-            ctx.beginPath();
-            ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = 'rgba(255, 182, 193, 0.6)';
-            ctx.beginPath();
-            ctx.ellipse(12, 5, 6, 3, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            if (!this.isBlinking) {
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(10, -8, 11, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = '#333';
-                ctx.beginPath();
-                ctx.arc(12, -7, 5, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(14, -9, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(11, -5, 1, 0, Math.PI * 2);
-                ctx.fill();
+            if (this.imageLoaded) {
+                // Draw image centered at (0,0) with size based on radius
+                const size = this.radius * 3.2;
+                ctx.drawImage(this.image, -size / 2, -size / 2, size, size);
             } else {
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
+                // Fallback while loading (Cute Pigeon Shape)
+                const s = this.radius / 5;
+
+                // Body
+                ctx.fillStyle = '#808e9b';
                 ctx.beginPath();
-                ctx.moveTo(4, -8);
-                ctx.quadraticCurveTo(10, -4, 16, -8);
-                ctx.stroke();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Iridescent neck
+                ctx.fillStyle = '#4834d4';
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath();
+                ctx.ellipse(this.radius * 0.4, -this.radius * 0.2, this.radius * 0.4, this.radius * 0.6, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+
+                // Orange Beak
+                ctx.fillStyle = '#FF9F43';
+                ctx.beginPath();
+                ctx.moveTo(this.radius * 0.8, -s);
+                ctx.lineTo(this.radius * 0.8, s);
+                ctx.lineTo(this.radius * 1.3, 0);
+                ctx.closePath();
+                ctx.fill();
+
+                // Eye
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(this.radius * 0.4, -this.radius * 0.4, s, 0, Math.PI * 2);
+                ctx.fill();
             }
-
-            if (!this.beakGradient) {
-                this.beakGradient = ctx.createLinearGradient(15, 0, 30, 10);
-                this.beakGradient.addColorStop(0, '#FF7F50');
-                this.beakGradient.addColorStop(1, '#FF4500');
-            }
-
-            ctx.fillStyle = this.beakGradient;
-            ctx.beginPath();
-            ctx.moveTo(this.radius - 2, 2);
-            ctx.quadraticCurveTo(this.radius + 12, 4, this.radius - 2, 10);
-            ctx.fill();
-
-            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-
-            const wingFlap = Math.sin(this.wingAngle) * 6;
-            ctx.fillStyle = '#FFD700';
-            ctx.beginPath();
-            ctx.ellipse(-6, 5 + wingFlap, 14, 9, -0.2, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.strokeStyle = '#E6B800';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Beanie Hat
-            ctx.fillStyle = '#E74C3C'; // Main beanie color (Red)
-            ctx.strokeStyle = '#c0392b';
-            ctx.lineWidth = 2;
-
-            // Beanie Body (The knitted part)
-            ctx.beginPath();
-            ctx.moveTo(-18, -18);
-            ctx.bezierCurveTo(-18, -40, 18, -40, 18, -18);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-
-            // Beanie Cuff (The folded part at the bottom)
-            ctx.fillStyle = '#C0392B'; // Slightly darker for the cuff
-            ctx.beginPath();
-            // Using ellipse for the cuff to match the rounded look
-            ctx.ellipse(0, -18, 21, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-
-            // Pom-pom on top
-            ctx.fillStyle = '#FFFFFF'; // White pom-pom
-            ctx.beginPath();
-            ctx.arc(0, -38, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
 
             ctx.restore();
         } catch (e) {
             logError(e);
         }
     }
+
 
     checkCollision(pipes, groundY) {
         if (this.y + this.radius > groundY) {

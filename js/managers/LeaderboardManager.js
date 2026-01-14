@@ -51,24 +51,38 @@ export default class LeaderboardManager {
 
     setupListeners() {
         if (this.closeBtn) {
-            this.closeBtn.addEventListener('click', () => this.hide());
+            this.closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.hide();
+            });
         }
         if (this.viewBtn) {
-            this.viewBtn.addEventListener('click', () => {
+            this.viewBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 this.show();
                 this.fetchScores();
             });
         }
         if (this.submitBtn) {
-            this.submitBtn.addEventListener('click', () => this.submitScore());
+            this.submitBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.submitScore();
+            });
         }
 
         // Close on backdrop click
         if (this.modal) {
             this.modal.addEventListener('click', (e) => {
-                if (e.target === this.modal) this.hide();
+                if (e.target === this.modal) {
+                    e.stopPropagation();
+                    this.hide();
+                }
             });
         }
+    }
+
+    isVisible() {
+        return this.modal && !this.modal.classList.contains('hidden');
     }
 
     show() {
@@ -117,8 +131,9 @@ export default class LeaderboardManager {
 
             // Show success styling
             this.submitBtn.textContent = "Submitted! ✅";
-            this.submitBtn.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
-            this.submitBtn.style.boxShadow = "0 4px 0 #065f46, 0 10px 30px rgba(16, 185, 129, 0.3)";
+            this.submitBtn.style.background = "#059669";
+            this.submitBtn.style.boxShadow = "none";
+            this.submitBtn.style.transform = "translate(6px, 6px)"; // Pressed state
 
             // Disable input after submission
             this.nameInput.disabled = true;
