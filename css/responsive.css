@@ -1,0 +1,187 @@
+/* ===== Responsive Design ===== */
+@media (max-width: 1400px) {
+    .game-title {
+        font-size: 56px;
+    }
+
+    .subtitle-container {
+        font-size: 16px;
+    }
+}
+
+/* Tablet Portrait logic - Vertical Split */
+@media (max-width: 1200px) and (orientation: portrait) {
+    .split-container {
+        flex-direction: column;
+    }
+
+    .divider {
+        width: 100%;
+        height: 4px;
+    }
+
+    .left-panel canvas,
+    .right-panel canvas {
+        border-radius: 12px;
+    }
+}
+
+/* Mobile Portrait - Show Rotate Message */
+@media screen and (max-width: 900px) and (orientation: portrait) {
+    .game-container {
+        display: none !important;
+    }
+
+    .rotate-message {
+        display: flex;
+    }
+}
+
+/* Mobile Landscape - Force Side-by-Side */
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+    .split-container {
+        flex-direction: row;
+        /* Ensure row */
+    }
+
+    .divider {
+        width: 4px;
+        height: 100%;
+    }
+
+    .game-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        padding: 0;
+        max-width: none;
+        /* Allow full width */
+        max-height: none;
+        /* Allow full height */
+    }
+
+    .ui-overlay {
+        top: 0;
+        transform: translateX(-50%) scale(0.65);
+        /* slightly smaller */
+        flex-direction: row;
+        /* Horizontal layout */
+        width: auto;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        /* Unified background */
+        padding: 5px 15px;
+        border-radius: 0 0 20px 20px;
+        backdrop-filter: blur(5px);
+    }
+
+    /* 2. Flatten the UI Overlay into a single row */
+    /* Remove individual backgrounds to reduce clutter */
+    .score-display,
+    .total-score-display,
+    .high-score-display {
+        background: none !important;
+        box-shadow: none !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        padding: 0 10px !important;
+        animation: none !important;
+        /* Stop distracting pulses */
+    }
+
+    .score-display {
+        border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 0 !important;
+    }
+
+    .total-score-display {
+        border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 0 !important;
+    }
+
+    /* Make text more compact */
+    .score-label,
+    .total-label,
+    .high-score-label {
+        font-size: 8px;
+        margin-bottom: 0;
+    }
+
+    .score-value,
+    .total-value {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .high-score-value {
+        font-size: 18px;
+    }
+
+    .game-title {
+        font-size: 32px;
+    }
+
+    .start-button {
+        padding: 10px 30px;
+        font-size: 16px;
+    }
+
+    /* Leaderboard Fixes for Mobile Landscape */
+    .leaderboard-container {
+        width: 95%;
+        max-height: 95vh;
+        /* Use almost full height */
+        padding: 1rem;
+        /* Reduce padding */
+    }
+
+    .leaderboard-modal {
+        align-items: flex-start;
+        /* Start from top */
+        padding-top: 10px;
+        /* Small buffer from top edge */
+    }
+
+    .leaderboard-header {
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .leaderboard-header h2 {
+        font-size: 1.2rem;
+    }
+
+    /* ===== OPTIMIZATIONS FOR VISIBILITY ===== */
+
+    /* 1. Hide Panel Labels (User knows which game is which) */
+    .panel-label {
+        display: none !important;
+    }
+
+    .subtitle-container {
+        display: none;
+        /* Hide subtitle on start screen to save space */
+    }
+
+    .game-instructions {
+        display: none;
+        /* Hide instructions on start screen */
+    }
+
+    /* Ensure game container covers everything */
+    html,
+    body {
+        background: #000;
+        /* Dark background for letterboxing if needed */
+    }
+
+    .ingame-fullscreen-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        margin-left: 10px;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
