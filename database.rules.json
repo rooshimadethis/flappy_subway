@@ -1,0 +1,26 @@
+{
+    "rules": {
+        "scores": {
+            ".read": true,
+            ".indexOn": [
+                "score"
+            ],
+            "$scoreId": {
+                ".write": "!data.exists()",
+                ".validate": "newData.hasChildren(['name', 'score', 'timestamp']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length < 50 && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('timestamp').isNumber()"
+            }
+        },
+        "weekly_scores": {
+            "$weekId": {
+                ".read": true,
+                ".indexOn": [
+                    "score"
+                ],
+                "$scoreId": {
+                    ".write": "!data.exists()",
+                    ".validate": "newData.hasChildren(['name', 'score', 'timestamp']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length < 50 && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('timestamp').isNumber()"
+                }
+            }
+        }
+    }
+}

@@ -184,6 +184,10 @@
         <div class="leaderboard-container">
             <div class="leaderboard-header">
                 <h2>GLOBAL TOP 10</h2>
+                <div class="leaderboard-tabs">
+                    <button class="tab-btn active" id="tabThisWeek">This Week</button>
+                    <button class="tab-btn" id="tabAllTime">All Time</button>
+                </div>
                 <button class="close-leaderboard" id="closeLeaderboard">×</button>
             </div>
             <div class="leaderboard-list" id="leaderboardList">
@@ -198,8 +202,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-
-    <script src="game.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>
