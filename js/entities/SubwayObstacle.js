@@ -183,6 +183,51 @@ export default class SubwayObstacle {
             ctx.beginPath();
             ctx.arc(centerX - 5, centerY - 5, 5, 0, Math.PI * 2);
             ctx.fill();
+
+        } else if (this.type === 'taxi') {
+            // Main Body (Classic Yellow Cab)
+            const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
+            bodyGrad.addColorStop(0, '#f1c40f');
+            bodyGrad.addColorStop(0.5, '#f39c12');
+            bodyGrad.addColorStop(1, '#f1c40f');
+
+            ctx.fillStyle = bodyGrad;
+            this.drawRoundedPart(ctx, 0, 0, w, h, 8);
+            ctx.fill();
+
+            // Checkerboard Side Detail
+            ctx.fillStyle = '#000';
+            const checkSize = 6;
+            for (let x = 0; x < w; x += checkSize * 2) {
+                ctx.fillRect(x, h * 0.5, checkSize, checkSize);
+                ctx.fillRect(x + checkSize, h * 0.5 + checkSize, checkSize, checkSize);
+            }
+
+            // Windshield
+            ctx.fillStyle = '#2c3e50';
+            this.drawRoundedPart(ctx, 8, 10, w - 16, h * 0.35, 4);
+            ctx.fill();
+
+            // Taxi Roof Sign
+            ctx.fillStyle = '#000';
+            ctx.fillRect(w / 2 - 15, -4, 30, 8);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 5px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('TAXI', w / 2, 2);
+
+            // Headlights
+            ctx.fillStyle = '#ecf0f1';
+            ctx.beginPath();
+            ctx.arc(10, h - 12, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(w - 10, h - 12, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bumper
+            ctx.fillStyle = '#34495e';
+            ctx.fillRect(4, h - 6, w - 8, 4);
         }
 
         ctx.restore();

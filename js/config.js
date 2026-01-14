@@ -30,11 +30,12 @@ export const CONFIG = {
         obstacles: {
             speed: 8,
             spawnInterval: 1200,
-            types: ['train', 'barrier', 'sign'],
+            types: ['train', 'barrier', 'sign', 'taxi'],
             dimensions: {
                 train: { width: 60, height: 80 },
                 barrier: { width: 60, height: 80 },
-                sign: { width: 60, height: 80 }
+                sign: { width: 60, height: 80 },
+                taxi: { width: 60, height: 70 }
             }
         },
         coins: {
