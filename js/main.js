@@ -36,6 +36,8 @@ class DualGame {
             this.coins = [];
             this.lastObstacleTime = 0;
             this.lastCoinTime = 0;
+            this.subwaySpawnTimer = 0;
+            this.coinSpawnedThisCycle = false;
 
             this.lastFrameTime = 0;
             this.gameOverTime = 0;
@@ -254,6 +256,8 @@ class DualGame {
         this.pipes = [];
         this.obstacles = [];
         this.coins = [];
+        this.subwaySpawnTimer = 0;
+        this.coinSpawnedThisCycle = false;
         this.updateUI();
         this.state.isPlaying = true;
         this.lastPipeTime = Date.now();
@@ -319,17 +323,24 @@ class DualGame {
         // ===== UPDATE SUBWAY SURFERS =====
         this.player.update(dt);
 
-        if (now - this.lastObstacleTime > CONFIG.subway.obstacles.spawnInterval) {
+        this.subwaySpawnTimer += dt;
+        const subwayIntervalFrames = CONFIG.subway.obstacles.spawnInterval / 16.67;
+
+        // Spawn Obstacle
+        if (this.subwaySpawnTimer >= subwayIntervalFrames) {
+            this.subwaySpawnTimer -= subwayIntervalFrames;
+            this.coinSpawnedThisCycle = false;
+
             const lane = Math.floor(Math.random() * 3);
             const type = CONFIG.subway.obstacles.types[Math.floor(Math.random() * CONFIG.subway.obstacles.types.length)];
             this.obstacles.push(new SubwayObstacle(lane, type));
-            this.lastObstacleTime = now;
         }
 
-        if (now - this.lastCoinTime > CONFIG.subway.coins.spawnInterval) {
+        // Spawn Coin (Synchronized to half-way between obstacles)
+        if (!this.coinSpawnedThisCycle && this.subwaySpawnTimer >= subwayIntervalFrames / 2) {
+            this.coinSpawnedThisCycle = true;
             const lane = Math.floor(Math.random() * 3);
             this.coins.push(new SubwayCoin(lane));
-            this.lastCoinTime = now;
         }
 
         for (let i = this.obstacles.length - 1; i >= 0; i--) {
