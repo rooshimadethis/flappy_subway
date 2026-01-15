@@ -6,37 +6,40 @@ export default class LeaderboardManager {
         this.modal = document.getElementById('leaderboardModal');
         this.list = document.getElementById('leaderboardList');
         this.closeBtn = document.getElementById('closeLeaderboard');
-        this.viewBtn = document.getElementById('viewLeaderboardButton');
         this.submitBtn = document.getElementById('submitScoreButton');
         this.nameInput = document.getElementById('playerNameInput');
 
+        // Filter buttons
+        this.filterHard = document.getElementById('filterHard');
+        this.filterEasy = document.getElementById('filterEasy');
         this.tabThisWeek = document.getElementById('tabThisWeek');
         this.tabAllTime = document.getElementById('tabAllTime');
-        this.activeTab = 'weekly'; // 'weekly' or 'allTime'
+
+        this.activeMode = 'hard'; // 'hard' or 'easy'
+        this.activeTimeframe = 'weekly'; // 'weekly' or 'allTime'
 
         this.setupListeners();
-        this.setupTabs();
+        this.setupFilters();
     }
 
-    setupTabs() {
-        if (this.tabThisWeek && this.tabAllTime) {
-            this.tabThisWeek.addEventListener('click', () => this.switchTab('weekly'));
-            this.tabAllTime.addEventListener('click', () => this.switchTab('allTime'));
-        }
+    setupFilters() {
+        if (this.filterHard) this.filterHard.addEventListener('click', () => this.switchMode('hard'));
+        if (this.filterEasy) this.filterEasy.addEventListener('click', () => this.switchMode('easy'));
+        if (this.tabThisWeek) this.tabThisWeek.addEventListener('click', () => this.switchTimeframe('weekly'));
+        if (this.tabAllTime) this.tabAllTime.addEventListener('click', () => this.switchTimeframe('allTime'));
     }
 
-    switchTab(tab) {
-        this.activeTab = tab;
+    switchMode(mode) {
+        this.activeMode = mode;
+        this.filterHard.classList.toggle('active', mode === 'hard');
+        this.filterEasy.classList.toggle('active', mode === 'easy');
+        this.fetchScores();
+    }
 
-        // Update UI
-        if (tab === 'weekly') {
-            this.tabThisWeek.classList.add('active');
-            this.tabAllTime.classList.remove('active');
-        } else {
-            this.tabThisWeek.classList.remove('active');
-            this.tabAllTime.classList.add('active');
-        }
-
+    switchTimeframe(timeframe) {
+        this.activeTimeframe = timeframe;
+        this.tabThisWeek.classList.toggle('active', timeframe === 'weekly');
+        this.tabAllTime.classList.toggle('active', timeframe === 'allTime');
         this.fetchScores();
     }
 
@@ -56,21 +59,12 @@ export default class LeaderboardManager {
                 this.hide();
             });
         }
-        if (this.viewBtn) {
-            this.viewBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.show();
-                this.fetchScores();
-            });
-        }
         if (this.submitBtn) {
             this.submitBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.submitScore();
             });
         }
-
-        // Close on backdrop click
         if (this.modal) {
             this.modal.addEventListener('click', (e) => {
                 if (e.target === this.modal) {
@@ -78,6 +72,20 @@ export default class LeaderboardManager {
                     this.hide();
                 }
             });
+
+            // Fix touch scrolling for mobile
+            if (this.list) {
+                const stopTouch = (e) => {
+                    // Only stop if the list is actually overflowable
+                    if (this.list.scrollHeight > this.list.clientHeight) {
+                        e.stopPropagation();
+                    }
+                };
+
+                this.list.addEventListener('touchstart', stopTouch, { passive: true });
+                this.list.addEventListener('touchmove', stopTouch, { passive: true });
+                this.list.addEventListener('touchend', stopTouch, { passive: true });
+            }
         }
     }
 
@@ -102,6 +110,9 @@ export default class LeaderboardManager {
         const name = this.nameInput.value.trim();
         const score = parseInt(document.getElementById('finalTotalScore').textContent) || 0;
 
+        const isHardMode = !document.getElementById('finalPongScore').parentElement.classList.contains('hidden');
+        const mode = isHardMode ? 'hard' : 'easy';
+
         if (!name) {
             alert("Please enter a name!");
             return;
@@ -114,48 +125,34 @@ export default class LeaderboardManager {
             const scoreData = {
                 name: name,
                 score: score,
+                mode: mode,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // 1. Submit to All-Time Leaderboard
             const updates = {};
-            const newScoreKey = firebaseDb.ref('scores').push().key;
-            updates['/scores/' + newScoreKey] = scoreData;
-
-            // 2. Submit to Weekly Leaderboard
             const weekId = this.getYearWeek();
-            const newWeeklyKey = firebaseDb.ref(`weekly_scores/${weekId}`).push().key;
-            updates[`/weekly_scores/${weekId}/${newWeeklyKey}`] = scoreData;
+
+            // Store in new segmented paths (leaderboard/hard/allTime etc)
+            const newKey = firebaseDb.ref(`leaderboard/${mode}/allTime`).push().key;
+            updates[`/leaderboard/${mode}/allTime/${newKey}`] = scoreData;
+            updates[`/leaderboard/${mode}/weekly/${weekId}/${newKey}`] = scoreData;
 
             await firebaseDb.ref().update(updates);
 
-            // Show success styling
             this.submitBtn.textContent = "Submitted! ✅";
             this.submitBtn.style.background = "#059669";
-            this.submitBtn.style.boxShadow = "none";
-            this.submitBtn.style.transform = "translate(6px, 6px)"; // Pressed state
-
-            // Disable input after submission
+            this.submitBtn.style.transform = "translate(6px, 6px)";
             this.nameInput.disabled = true;
 
-            // Show leaderboard after short delay
             setTimeout(() => {
+                // When we show the leaderboard after submission, auto-switch to the mode they just played
+                this.switchMode(mode);
                 this.show();
-                this.fetchScores();
             }, 1000);
 
         } catch (e) {
             console.error("Error submitting score:", e);
-            let msg = "Failed to submit score.";
-
-            // Check for common deployment issues
-            if (e.code === 'PERMISSION_DENIED') {
-                msg += "\n\nPermission denied. Check your Firebase Database Rules.";
-            } else if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                msg += "\n\nNote: If this works locally but not here, you likely need to add '" + window.location.hostname + "' to your Firebase Authorized Domains or API Key restrictions.";
-            }
-
-            alert(msg);
+            alert("Failed to submit score.");
             this.submitBtn.disabled = false;
             this.submitBtn.textContent = "SUBMIT SCORE 🏆";
         }
@@ -163,15 +160,15 @@ export default class LeaderboardManager {
 
     fetchScores() {
         if (!firebaseDb) {
-            this.list.innerHTML = '<div class="loading-spinner">Leaderboard unavailable (Firebase not configured)</div>';
+            this.list.innerHTML = '<div class="loading-spinner">Leaderboard unavailable</div>';
             return;
         }
 
         this.list.innerHTML = '<div class="loading-spinner">Loading scores...</div>';
 
-        let path = 'scores';
-        if (this.activeTab === 'weekly') {
-            path = `weekly_scores/${this.getYearWeek()}`;
+        let path = `leaderboard/${this.activeMode}/allTime`;
+        if (this.activeTimeframe === 'weekly') {
+            path = `leaderboard/${this.activeMode}/weekly/${this.getYearWeek()}`;
         }
 
         const scoresRef = firebaseDb.ref(path);
@@ -181,27 +178,18 @@ export default class LeaderboardManager {
                 snapshot.forEach((childSnapshot) => {
                     scores.push(childSnapshot.val());
                 });
-
-                // Firebase returns ascending order, so reverse it
                 scores.reverse();
-
                 this.renderScores(scores);
             })
             .catch((e) => {
                 console.error("Error fetching scores:", e);
-                let errorDetails = "Error loading scores";
-
-                if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                    errorDetails += "<br><span style='font-size: 0.8em; color: #ff6b6b'>Host not authorized? Check Firebase Console.</span>";
-                }
-
-                this.list.innerHTML = `<div class="loading-spinner">${errorDetails}</div>`;
+                this.list.innerHTML = `<div class="loading-spinner">Error loading scores</div>`;
             });
     }
 
     renderScores(scores) {
         if (scores.length === 0) {
-            this.list.innerHTML = '<div class="loading-spinner">No scores yet! Be the first!</div>';
+            this.list.innerHTML = '<div class="loading-spinner">No scores yet in this category!</div>';
             return;
         }
 
@@ -213,11 +201,18 @@ export default class LeaderboardManager {
             else if (index === 2) rankEmoji = '🥉';
             else rankEmoji = `#${index + 1}`;
 
+            const isHard = entry.mode === 'hard';
+            const modeBadge = isHard ? '<span class="mode-badge hard">💀 HARD</span>' : '<span class="mode-badge easy">🐣 EASY</span>';
+            const entryClass = isHard ? 'leaderboard-entry hard-mode-entry' : 'leaderboard-entry';
+
             html += `
-                <div class="leaderboard-entry">
+                <div class="${entryClass}">
                     <div class="leaderboard-rank">${rankEmoji}</div>
                     <div class="leaderboard-name">${this.escapeHtml(entry.name)}</div>
-                    <div class="leaderboard-score">${entry.score}</div>
+                    <div class="leaderboard-score-section">
+                        ${modeBadge}
+                        <div class="leaderboard-score">${entry.score}</div>
+                    </div>
                 </div>
             `;
         });

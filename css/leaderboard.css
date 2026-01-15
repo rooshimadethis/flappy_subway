@@ -63,6 +63,12 @@
 .leaderboard-list {
     overflow-y: auto;
     flex-grow: 1;
+    -webkit-overflow-scrolling: touch;
+    /* iOS momentum scrolling */
+    touch-action: pan-y;
+    /* Allow vertical panning */
+    overscroll-behavior: contain;
+    /* Prevent parent scrolling */
 }
 
 .leaderboard-entry {
@@ -95,35 +101,107 @@
     flex-grow: 1;
     text-align: left;
     color: #fff;
+    font-size: 11px;
+}
+
+.leaderboard-score-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mode-badge {
+    font-size: 7px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    border: 1px solid;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.mode-badge.hard {
+    color: #ff4b2b;
+    border-color: #ff4b2b;
+    background: rgba(255, 75, 43, 0.1);
+}
+
+.mode-badge.easy {
+    color: #059669;
+    border-color: #059669;
+    background: rgba(5, 150, 105, 0.1);
+}
+
+.hard-mode-entry {
+    background: rgba(255, 215, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.hard-mode-entry::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #ff4b2b;
+    box-shadow: 0 0 10px #ff4b2b;
 }
 
 .leaderboard-score {
     color: #ffd700;
+    font-size: 12px;
 }
 
-/* Leaderboard Tabs */
-.leaderboard-tabs {
+.hard-mode-entry .leaderboard-score {
+    color: #ff4b2b;
+    text-shadow: 0 0 5px rgba(255, 75, 43, 0.5);
+}
+
+/* Leaderboard Filters */
+.leaderboard-filters {
     display: flex;
-    justify-content: space-around;
-    gap: 15px;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1.5rem;
     padding: 0 1rem;
 }
 
-.tab-btn {
+.filter-group {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.filter-btn {
     background: #000;
     border: 2px solid #fff;
     color: #fff;
-    padding: 8px 12px;
+    padding: 6px 10px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 8px;
     font-family: inherit;
+    flex: 1;
+    max-width: 160px;
+    white-space: nowrap;
 }
 
-.tab-btn.active {
+.filter-btn.active {
     background: #4f46e5;
+    border-color: #fff;
     transform: translate(2px, 2px);
     box-shadow: none;
+}
+
+.mode-filters .filter-btn.active {
+    background: #ff4b2b;
+    /* Hard mode red */
+}
+
+.mode-filters .filter-btn:nth-child(2).active {
+    background: #059669;
+    /* Easy mode green */
 }
 
 /* Leaderboard Input Section */
