@@ -44,193 +44,190 @@ export default class SubwayObstacle {
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        const w = this.width;
-        const h = this.height;
-
-        if (this.type === 'train') {
-            // Main Body (Subway Car Front)
-            const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
-            bodyGrad.addColorStop(0, '#7f8c8d');
-            bodyGrad.addColorStop(0.5, '#bdc3c7');
-            bodyGrad.addColorStop(1, '#7f8c8d');
-
-            ctx.fillStyle = bodyGrad;
-            this.drawRoundedPart(ctx, 0, 0, w, h, 12);
-            ctx.fill();
-
-            // Windshield
-            ctx.fillStyle = '#2c3e50';
-            this.drawRoundedPart(ctx, 6, 15, w - 12, h * 0.4, 4);
-            ctx.fill();
-
-            // Windshield Sheen/Reflection
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.beginPath();
-            ctx.moveTo(8, 17);
-            ctx.lineTo(w - 20, 17);
-            ctx.lineTo(8, 17 + h * 0.3);
-            ctx.closePath();
-            ctx.fill();
-
-            // Digital Destination Board
-            ctx.fillStyle = '#000';
-            ctx.fillRect(w / 2 - 15, 4, 30, 8);
-            ctx.fillStyle = '#f1c40f';
-            ctx.font = 'bold 6px monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('CITY', w / 2, 10);
-
-            // Headlights
-            ctx.fillStyle = '#ecf0f1';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#f1c40f';
-            // Left light
-            ctx.beginPath();
-            ctx.arc(12, h - 15, 5, 0, Math.PI * 2);
-            ctx.fill();
-            // Right light
-            ctx.beginPath();
-            ctx.arc(w - 12, h - 15, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // Grill/Bumper area
-            ctx.fillStyle = '#34495e';
-            ctx.fillRect(w * 0.2, h - 10, w * 0.6, 6);
-
-            // Side lines for depth
-            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(2, 2, w - 4, h - 4);
-
-        } else if (this.type === 'barrier') {
-            // Draw Legs
-            ctx.fillStyle = '#2c3e50';
-            ctx.fillRect(8, 0, 4, h);
-            ctx.fillRect(w - 12, 0, 4, h);
-
-            // Horizontal Boards with Stripes
-            const boardWidth = w;
-            const boardHeight = 15;
-
-            const drawBoard = (y) => {
-                ctx.save();
-                ctx.translate(0, y);
-                // Background
-                ctx.fillStyle = '#f1c40f'; // Safety Yellow
-                ctx.fillRect(0, 0, boardWidth, boardHeight);
-
-                // Stripes
-                ctx.fillStyle = '#2c3e50';
-                for (let i = -20; i < boardWidth; i += 20) {
-                    ctx.beginPath();
-                    ctx.moveTo(i, 0);
-                    ctx.lineTo(i + 10, 0);
-                    ctx.lineTo(i + 20, boardHeight);
-                    ctx.lineTo(i + 10, boardHeight);
-                    ctx.closePath();
-                    ctx.fill();
-                }
-
-                // Board border
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(0, 0, boardWidth, boardHeight);
-                ctx.restore();
-            };
-
-            drawBoard(15);
-            drawBoard(45);
-
-            // Warning Light on top
-            ctx.fillStyle = '#e67e22';
-            ctx.fillRect(w / 2 - 4, 5, 8, 10);
-            ctx.fillStyle = '#f1c40f';
-            ctx.beginPath();
-            ctx.arc(w / 2, 8, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-        } else if (this.type === 'sign') {
-            // Pole
-            const poleGrad = ctx.createLinearGradient(w / 2 - 3, 0, w / 2 + 3, 0);
-            poleGrad.addColorStop(0, '#7f8c8d');
-            poleGrad.addColorStop(0.5, '#ecf0f1');
-            poleGrad.addColorStop(1, '#7f8c8d');
-
-            ctx.fillStyle = poleGrad;
-            ctx.fillRect(w / 2 - 3, 0, 6, h);
-
-            // Round Sign
-            const radius = 22;
-            const centerX = w / 2;
-            const centerY = 25;
-
-            // Outer ring
-            ctx.fillStyle = '#e74c3c';
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Inner white bar (No Entry style)
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(centerX - 15, centerY - 4, 30, 8);
-
-            // Highlight
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
-            ctx.beginPath();
-            ctx.arc(centerX - 5, centerY - 5, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-        } else if (this.type === 'taxi') {
-            // Main Body (Classic Yellow Cab)
-            const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
-            bodyGrad.addColorStop(0, '#f1c40f');
-            bodyGrad.addColorStop(0.5, '#f39c12');
-            bodyGrad.addColorStop(1, '#f1c40f');
-
-            ctx.fillStyle = bodyGrad;
-            this.drawRoundedPart(ctx, 0, 0, w, h, 8);
-            ctx.fill();
-
-            // Checkerboard Side Detail
-            ctx.fillStyle = '#000';
-            const checkSize = 6;
-            for (let x = 0; x < w; x += checkSize * 2) {
-                ctx.fillRect(x, h * 0.5, checkSize, checkSize);
-                ctx.fillRect(x + checkSize, h * 0.5 + checkSize, checkSize, checkSize);
-            }
-
-            // Windshield
-            ctx.fillStyle = '#2c3e50';
-            this.drawRoundedPart(ctx, 8, 10, w - 16, h * 0.35, 4);
-            ctx.fill();
-
-            // Taxi Roof Sign
-            ctx.fillStyle = '#000';
-            ctx.fillRect(w / 2 - 15, -4, 30, 8);
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 5px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('TAXI', w / 2, 2);
-
-            // Headlights
-            ctx.fillStyle = '#ecf0f1';
-            ctx.beginPath();
-            ctx.arc(10, h - 12, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(w - 10, h - 12, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Bumper
-            ctx.fillStyle = '#34495e';
-            ctx.fillRect(4, h - 6, w - 8, 4);
+        switch (this.type) {
+            case 'train':
+                this._drawTrain(ctx);
+                break;
+            case 'barrier':
+                this._drawBarrier(ctx);
+                break;
+            case 'sign':
+                this._drawSign(ctx);
+                break;
+            case 'taxi':
+                this._drawTaxi(ctx);
+                break;
         }
 
         ctx.restore();
+    }
+
+    _drawTrain(ctx) {
+        const w = this.width;
+        const h = this.height;
+
+        // Main Body (Subway Car Front)
+        const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
+        bodyGrad.addColorStop(0, '#7f8c8d');
+        bodyGrad.addColorStop(0.5, '#bdc3c7');
+        bodyGrad.addColorStop(1, '#7f8c8d');
+
+        ctx.fillStyle = bodyGrad;
+        this.drawRoundedPart(ctx, 0, 0, w, h, 12);
+        ctx.fill();
+
+        // Windshield
+        ctx.fillStyle = '#2c3e50';
+        this.drawRoundedPart(ctx, 6, 15, w - 12, h * 0.4, 4);
+        ctx.fill();
+
+        // Windshield Sheen
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.beginPath();
+        ctx.moveTo(8, 17);
+        ctx.lineTo(w - 20, 17);
+        ctx.lineTo(8, 17 + h * 0.3);
+        ctx.closePath();
+        ctx.fill();
+
+        // Digital Destination Board
+        ctx.fillStyle = '#000';
+        ctx.fillRect(w / 2 - 15, 4, 30, 8);
+        ctx.fillStyle = '#f1c40f';
+        ctx.font = 'bold 6px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('CITY', w / 2, 10);
+
+        // Headlights
+        ctx.fillStyle = '#ecf0f1';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#f1c40f';
+        ctx.beginPath();
+        ctx.arc(12, h - 15, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(w - 12, h - 15, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Bumper
+        ctx.fillStyle = '#34495e';
+        ctx.fillRect(w * 0.2, h - 10, w * 0.6, 6);
+    }
+
+    _drawBarrier(ctx) {
+        const w = this.width;
+        const h = this.height;
+
+        // Legs
+        ctx.fillStyle = '#2c3e50';
+        ctx.fillRect(8, 0, 4, h);
+        ctx.fillRect(w - 12, 0, 4, h);
+
+        const drawBoard = (y) => {
+            ctx.save();
+            ctx.translate(0, y);
+            ctx.fillStyle = '#f1c40f';
+            ctx.fillRect(0, 0, w, 15);
+            ctx.fillStyle = '#2c3e50';
+            for (let i = -20; i < w; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i + 10, 0);
+                ctx.lineTo(i + 20, 15);
+                ctx.lineTo(i + 10, 15);
+                ctx.closePath();
+                ctx.fill();
+            }
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(0, 0, w, 15);
+            ctx.restore();
+        };
+
+        drawBoard(15);
+        drawBoard(45);
+
+        // Warning Light
+        ctx.fillStyle = '#e67e22';
+        ctx.fillRect(w / 2 - 4, 5, 8, 10);
+        ctx.fillStyle = '#f1c40f';
+        ctx.beginPath();
+        ctx.arc(w / 2, 8, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    _drawSign(ctx) {
+        const w = this.width;
+        const h = this.height;
+
+        // Pole
+        const poleGrad = ctx.createLinearGradient(w / 2 - 3, 0, w / 2 + 3, 0);
+        poleGrad.addColorStop(0, '#7f8c8d');
+        poleGrad.addColorStop(0.5, '#ecf0f1');
+        poleGrad.addColorStop(1, '#7f8c8d');
+        ctx.fillStyle = poleGrad;
+        ctx.fillRect(w / 2 - 3, 0, 6, h);
+
+        // Round Sign
+        const radius = 22;
+        const centerX = w / 2;
+        const centerY = 25;
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // No Entry bar
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(centerX - 15, centerY - 4, 30, 8);
+    }
+
+    _drawTaxi(ctx) {
+        const w = this.width;
+        const h = this.height;
+
+        // Body
+        const bodyGrad = ctx.createLinearGradient(0, 0, w, 0);
+        bodyGrad.addColorStop(0, '#f1c40f');
+        bodyGrad.addColorStop(0.5, '#f39c12');
+        bodyGrad.addColorStop(1, '#f1c40f');
+        ctx.fillStyle = bodyGrad;
+        this.drawRoundedPart(ctx, 0, 0, w, h, 8);
+        ctx.fill();
+
+        // Checkerboard
+        ctx.fillStyle = '#000';
+        const checkSize = 6;
+        for (let x = 0; x < w; x += checkSize * 2) {
+            ctx.fillRect(x, h * 0.5, checkSize, checkSize);
+            ctx.fillRect(x + checkSize, h * 0.5 + checkSize, checkSize, checkSize);
+        }
+
+        // Windshield
+        ctx.fillStyle = '#2c3e50';
+        this.drawRoundedPart(ctx, 8, 10, w - 16, h * 0.35, 4);
+        ctx.fill();
+
+        // Roof Sign
+        ctx.fillStyle = '#000';
+        ctx.fillRect(w / 2 - 15, -4, 30, 8);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 5px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('TAXI', w / 2, 2);
+
+        // Headlights
+        ctx.fillStyle = '#ecf0f1';
+        ctx.beginPath();
+        ctx.arc(10, h - 12, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(w - 10, h - 12, 5, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     drawRoundedPart(ctx, x, y, w, h, r) {

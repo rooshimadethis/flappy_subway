@@ -49,6 +49,8 @@
     color: #fff;
 }
 
+/* Button theme moved to components.css for global consistency */
+
 .subtitle-game {
     display: flex;
     align-items: center;
@@ -61,6 +63,12 @@
 .subtitle-x {
     font-size: 20px;
     color: #ff4b2b;
+}
+
+.subtitle-container.hard-mode {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .game-instructions {
@@ -82,6 +90,33 @@
     border: 2px solid #ff4b2b;
     padding: 10px 20px;
     margin-top: 10px;
+}
+
+.mode-selection {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    width: 100%;
+    justify-content: center;
+    max-width: 800px;
+}
+
+.start-button.easy {
+    background: #059669;
+    box-shadow: 6px 6px 0 #064e3b;
+}
+
+.start-button.hard {
+    background: #dc2626;
+    box-shadow: 6px 6px 0 #7f1d1d;
+}
+
+.start-button.easy:hover {
+    background: #10b981;
+}
+
+.start-button.hard:hover {
+    background: #ef4444;
 }
 
 .start-screen-buttons {
@@ -169,10 +204,28 @@
 
 .game-over-buttons {
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    /* Allow wrapping to prevent squeezing */
+    gap: 12px;
     justify-content: center;
     margin-top: 1rem;
+    width: 100%;
 }
+
+/* The following rules for switch-mode-button are now overridden by the general button styles above */
+/*
+.switch-mode-button {
+    background: #7c3aed;
+}
+
+.switch-mode-button:hover {
+    background: #8b5cf6;
+}
+
+.switch-mode-button:active {
+    background: #5b21b6;
+}
+*/
 
 /* ===== Rotate Device Message ===== */
 .rotate-message {

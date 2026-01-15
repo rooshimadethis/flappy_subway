@@ -27,12 +27,20 @@
     </div>
     <div class="game-container">
         <!-- Split screen canvases -->
-        <div class="split-container">
+        <div class="split-container" id="splitContainer">
             <div class="game-panel left-panel">
                 <canvas id="flappyCanvas"></canvas>
                 <div class="panel-label">FLAPPY BIRD</div>
                 <div class="control-hint">Tap 👆</div>
             </div>
+
+            <div class="divider middle-divider hidden"></div>
+            <div class="game-panel middle-panel hidden">
+                <div id="pongContainer"></div>
+                <div class="panel-label">3D PONG</div>
+                <div class="control-hint">X / V ⌨️</div>
+            </div>
+
             <div class="divider"></div>
             <div class="game-panel right-panel">
                 <canvas id="subwayCanvas"></canvas>
@@ -47,6 +55,11 @@
                 <div class="score-section">
                     <div class="score-label">FLAPPY</div>
                     <div class="score-value" id="flappyScore">0</div>
+                </div>
+                <div class="score-divider pong-divider hidden">|</div>
+                <div class="score-section pong-score-section hidden">
+                    <div class="score-label">PONG</div>
+                    <div class="score-value" id="pongScore">0</div>
                 </div>
                 <div class="score-divider">|</div>
                 <div class="score-section">
@@ -88,19 +101,34 @@
                         <span class="emoji">🏃</span>
                         <span>Subway Surfers</span>
                     </div>
+                    <div class="subtitle-x hard-only">×</div>
+                    <div class="subtitle-game hard-only">
+                        <span class="emoji">🏓</span>
+                        <span>3D Pong</span>
+                    </div>
                 </div>
                 <p class="game-instructions">
                     <strong>Controls:</strong><br>
                     <span class="control-item">🐦 SPACE = Jump</span>
                     <span class="control-separator">•</span>
-                    <span class="control-item">🏃 A/D or ← → = Move Lanes</span>
+                    <span class="control-item">🏃 A/D or ← → = Lanes</span>
+                    <br class="hard-only">
+                    <span class="control-item hard-only">🏓 X / V = Pong Paddle</span>
                 </p>
-                <p class="game-warning">⚠️ Die in either game = GAME OVER</p>
+                <p class="game-warning">⚠️ Die in ANY game = GAME OVER</p>
             </div>
-            <button class="start-button" id="startButton">
-                <span class="button-text">START DUAL CHALLENGE</span>
-                <span class="button-icon">🚀</span>
-            </button>
+
+            <div class="mode-selection">
+                <button class="start-button easy" id="startEasyButton">
+                    <span class="button-text">EASY MODE (2 GAMES)</span>
+                    <span class="button-icon">🐣</span>
+                </button>
+                <button class="start-button hard" id="startHardButton">
+                    <span class="button-text">HARD MODE (3 GAMES)</span>
+                    <span class="button-icon">💀</span>
+                </button>
+            </div>
+
             <div class="start-screen-buttons">
                 <button class="view-leaderboard-button" id="startScreenLeaderboardBtn">
                     LEADERBOARD 📜
@@ -123,6 +151,10 @@
                         <div class="final-score-label">🐦 Flappy Bird</div>
                         <div class="final-score-value" id="finalFlappyScore">0</div>
                     </div>
+                    <div class="final-score-item pong-final-score hidden">
+                        <div class="final-score-label">🏓 3D Pong</div>
+                        <div class="final-score-value" id="finalPongScore">0</div>
+                    </div>
                     <div class="final-score-item">
                         <div class="final-score-label">🏃 Subway Surfers</div>
                         <div class="final-score-value" id="finalSubwayScore">0</div>
@@ -134,7 +166,7 @@
                 </div>
 
                 <div class="leaderboard-section">
-                    <input type="text" id="playerNameInput" placeholder="Enter Name for Leaderboard" maxlength="15"
+                    <input type="text" id="playerNameInput" placeholder="Enter Name" maxlength="15"
                         class="player-name-input">
                     <button class="submit-score-button" id="submitScoreButton">
                         SUBMIT SCORE 🏆
@@ -146,6 +178,10 @@
                         <span class="button-text">TRY AGAIN</span>
                         <span class="button-icon">🔄</span>
                     </button>
+                    <button class="switch-mode-button" id="switchModeButton">
+                        <span class="button-text">SWITCH MODE</span>
+                        <span class="button-icon">⚡</span>
+                    </button>
                     <button class="view-leaderboard-button" id="viewLeaderboardButton">
                         LEADERBOARD 📜
                     </button>
@@ -155,9 +191,6 @@
                 </div>
             </div>
         </div>
-        <!-- <button class="reset-score-button" id="resetScoreButton">
-            RESET LOCAL BEST
-        </button> -->
     </div>
 
     <!-- Rotate Device Message -->
@@ -200,12 +233,16 @@
                 <!-- populated by js -->
             </div>
         </div>
+    </div>
 
-        <!-- Firebase SDKs -->
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-        <script type="module" src="js/main.js"></script>
+    <!-- Three.js for 3D Pong -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

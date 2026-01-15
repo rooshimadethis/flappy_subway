@@ -59,12 +59,16 @@
     z-index: 20;
 }
 
-.control-hint {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 8px;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
+#pongContainer {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.middle-panel {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+}
+
+.hidden {
+    display: none !important;
 }

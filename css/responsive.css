@@ -125,7 +125,8 @@
     .restart-button,
     .view-leaderboard-button,
     .submit-score-button,
-    .fullscreen-button {
+    .fullscreen-button,
+    .switch-mode-button {
         padding: 10px 24px;
         font-size: 14px;
         border-radius: 12px;
@@ -136,7 +137,8 @@
     .restart-button:active,
     .view-leaderboard-button:active,
     .submit-score-button:active,
-    .fullscreen-button:active {
+    .fullscreen-button:active,
+    .switch-mode-button:active {
         transform: translateY(3px);
     }
 

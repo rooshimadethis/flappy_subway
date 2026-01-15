@@ -1,15 +1,22 @@
 export default class DualGameState {
     constructor() {
         this.flappyScore = 0;
+        this.pongScore = 0;
         this.subwayScore = 0;
         this.highScore = parseInt(localStorage.getItem('dualChallengeHighScore')) || 0;
         this.isPlaying = false;
         this.isGameOver = false;
         this.deathCause = '';
+        this.mode = 'hard'; // 'easy' or 'hard'
     }
 
     incrementFlappyScore() {
         this.flappyScore += 3;
+        this.updateHighScore();
+    }
+
+    incrementPongScore() {
+        this.pongScore += 5; // Pong points are worth more since it's hard!
         this.updateHighScore();
     }
 
@@ -19,7 +26,10 @@ export default class DualGameState {
     }
 
     getTotalScore() {
-        return this.flappyScore + this.subwayScore;
+        if (this.mode === 'easy') {
+            return this.flappyScore + this.subwayScore;
+        }
+        return this.flappyScore + this.pongScore + this.subwayScore;
     }
 
     updateHighScore() {
@@ -32,6 +42,7 @@ export default class DualGameState {
 
     reset() {
         this.flappyScore = 0;
+        this.pongScore = 0;
         this.subwayScore = 0;
         this.isPlaying = false;
         this.isGameOver = false;
