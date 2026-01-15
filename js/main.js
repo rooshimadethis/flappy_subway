@@ -110,6 +110,15 @@ class DualGame {
             });
         }
 
+        const gameOverLeaderboardBtn = document.getElementById('viewLeaderboardButton');
+        if (gameOverLeaderboardBtn) {
+            gameOverLeaderboardBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.leaderboard.show();
+                this.leaderboard.fetchScores();
+            });
+        }
+
         const restartBtn = document.getElementById('restartButton');
         if (restartBtn) {
             restartBtn.addEventListener('click', (e) => {
@@ -165,7 +174,8 @@ class DualGame {
         let touchStartY = 0;
 
         document.addEventListener('touchstart', (e) => {
-            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+            // Check if we touched a button or input (including their children)
+            if (e.target.closest('button') || e.target.closest('input')) return;
             if (this.leaderboard.isVisible()) return;
 
             if (!this.state.isPlaying || this.state.isGameOver) {
