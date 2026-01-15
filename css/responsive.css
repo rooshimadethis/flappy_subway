@@ -166,28 +166,132 @@
         border-radius: 12px;
     }
 
-    /* ===== OPTIMIZATIONS FOR VISIBILITY ===== */
+    /* ===== Game Over Landscape Re-layout ===== */
+    .game-over-container {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        grid-template-areas:
+            "title title"
+            "death death"
+            "scores leaderboard"
+            "scores buttons";
+        gap: 10px 20px;
+        max-width: 98vw;
+        max-height: 98vh;
+        text-align: left;
+        align-items: center;
+        padding: 10px 20px;
+        box-sizing: border-box;
+    }
 
-    /* 1. Hide Panel Labels (User knows which game is which) */
+    .game-over-title {
+        grid-area: title;
+        font-size: 22px;
+        margin-bottom: 0;
+        text-align: center;
+        text-shadow: 2px 2px 0 #ff4b2b;
+    }
+
+    .death-indicator {
+        grid-area: death;
+        margin-bottom: 0;
+        padding: 5px 15px;
+        font-size: 11px;
+        border-width: 2px !important;
+        text-align: center;
+    }
+
+    .final-scores {
+        grid-area: scores;
+        margin-bottom: 0;
+        padding: 12px 15px;
+        border-width: 2px !important;
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .final-score-item {
+        padding: 4px 0;
+        font-size: 10px;
+    }
+
+    .final-score-total {
+        margin-top: 8px;
+        padding-top: 8px;
+        font-size: 13px;
+        border-top-width: 2px !important;
+    }
+
+    .leaderboard-section {
+        grid-area: leaderboard;
+        display: grid !important;
+        grid-template-columns: 1fr 140px;
+        gap: 8px;
+        margin-top: 0;
+        align-items: stretch;
+    }
+
+    .player-name-input {
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+        min-height: 44px !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .submit-score-button {
+        font-size: 10px !important;
+        padding: 0 10px !important;
+        min-height: 44px !important;
+        margin: 0 !important;
+        white-space: normal !important;
+        text-align: center;
+    }
+
+    .game-over-buttons {
+        grid-area: buttons;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .button-group-main,
+    .button-group-sub {
+        display: contents !important;
+    }
+
+    .restart-button,
+    .view-leaderboard-button,
+    .fullscreen-button,
+    .switch-mode-button {
+        padding: 10px 15px !important;
+        font-size: 10px !important;
+        min-height: 44px !important;
+        width: 100% !important;
+        box-shadow: 3px 3px 0 #000 !important;
+        border-width: 2px !important;
+        margin: 0 !important;
+    }
+
+    .restart-button .button-icon,
+    .switch-mode-button .button-icon {
+        font-size: 14px;
+    }
+
+    /* ===== OPTIMIZATIONS FOR VISIBILITY (Restored) ===== */
     .panel-label {
         display: none !important;
     }
 
     .subtitle-container {
         display: none;
-        /* Hide subtitle on start screen to save space */
     }
 
     .game-instructions {
         display: none;
-        /* Hide instructions on start screen */
-    }
-
-    /* Ensure game container covers everything */
-    html,
-    body {
-        background: #000;
-        /* Dark background for letterboxing if needed */
     }
 
     .ingame-fullscreen-btn {

@@ -507,6 +507,27 @@ window.addEventListener('load', () => {
             if (document.exitFullscreen) document.exitFullscreen();
         }
     };
+
+    // Fix for mobile viewport height and browser chrome detection
+    const fixViewportHeight = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+        // Detect if user is in browser vs standalone/fullscreen
+        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        const isFullscreen = !!document.fullscreenElement;
+
+        if (!isStandalone && !isFullscreen) {
+            document.body.classList.add('is-not-fullscreen');
+        } else {
+            document.body.classList.remove('is-not-fullscreen');
+        }
+    };
+
+    window.addEventListener('resize', fixViewportHeight);
+    window.addEventListener('orientationchange', fixViewportHeight);
+    fixViewportHeight();
+
     document.getElementById('fullscreenBtn')?.addEventListener('click', toggleFullscreen);
     document.getElementById('inGameFullscreenBtn')?.addEventListener('click', toggleFullscreen);
     document.getElementById('gameOverFullscreenBtn')?.addEventListener('click', toggleFullscreen);

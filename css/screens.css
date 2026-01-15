@@ -204,11 +204,18 @@
 
 .game-over-buttons {
     display: flex;
-    flex-wrap: wrap;
-    /* Allow wrapping to prevent squeezing */
+    flex-direction: column;
     gap: 12px;
     justify-content: center;
     margin-top: 1rem;
+    width: 100%;
+}
+
+.button-group-main,
+.button-group-sub {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
     width: 100%;
 }
 
