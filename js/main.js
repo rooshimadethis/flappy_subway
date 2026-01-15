@@ -197,10 +197,13 @@ class DualGame {
 
             if (touch.clientX >= halfWidth) {
                 const touchEndX = touch.clientX;
+                const touchEndY = touch.clientY;
                 const deltaX = touchEndX - touchStartX;
-                const threshold = 30;
+                const deltaY = touchEndY - touchStartY;
+                const threshold = 15; // More sensitive
 
-                if (Math.abs(deltaX) > threshold) {
+                // If swipe is more horizontal than vertical, trigger move
+                if (Math.abs(deltaX) > threshold && Math.abs(deltaX) > Math.abs(deltaY)) {
                     e.preventDefault();
                     if (deltaX > 0) {
                         this.player.moveRight();
