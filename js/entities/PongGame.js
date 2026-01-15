@@ -123,11 +123,11 @@ export default class PongGame {
 
             // In landscape mode, the axes are swapped
             if (orientation === 90) {
-                tilt = event.beta / 30;
+                tilt = event.beta / 15;
             } else if (orientation === -90 || orientation === 270) {
-                tilt = -event.beta / 30;
+                tilt = -event.beta / 15;
             } else {
-                tilt = event.gamma / 30;
+                tilt = event.gamma / 15;
             }
 
             if (tilt !== 0 && !isNaN(tilt)) {
@@ -189,10 +189,9 @@ export default class PongGame {
         const lerpFactor = 0.2 * dt;
         this.playerPaddle.position.x += (this.playerTargetX - this.playerPaddle.position.x) * lerpFactor;
 
-        // Simple AI for the other paddle
-        const aiLerp = 0.08 * dt;
-        const aiTargetX = Math.max(-4, Math.min(4, this.ball.position.x));
-        this.aiPaddle.position.x += (aiTargetX - this.aiPaddle.position.x) * aiLerp;
+        // Unbeatable AI: Follow the ball X position instantly
+        const maxPaddleX = (CONFIG.pong.courtSize.width - CONFIG.pong.paddleSize.width) / 2;
+        this.aiPaddle.position.x = Math.max(-maxPaddleX, Math.min(maxPaddleX, this.ball.position.x));
 
         // Move Ball
         this.ball.position.x += this.ballVelocity.x * dt;
@@ -221,8 +220,8 @@ export default class PongGame {
                 const hitOffset = (this.ball.position.x - paddle.position.x) / paddleHalfWidth;
                 this.ballVelocity.x += hitOffset * 0.1;
 
-                // Increase speed slightly
-                this.ballVelocity.multiplyScalar(1.05);
+                // (Speed increase removed)
+                // this.ballVelocity.multiplyScalar(1.05);
 
                 if (isPlayer) {
                     this.onScore(); // Bonus points for hitting?

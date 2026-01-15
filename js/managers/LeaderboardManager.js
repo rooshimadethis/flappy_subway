@@ -73,19 +73,19 @@ export default class LeaderboardManager {
                 }
             });
 
-            // Fix touch scrolling for mobile
-            if (this.list) {
-                const stopTouch = (e) => {
-                    // Only stop if the list is actually overflowable
-                    if (this.list.scrollHeight > this.list.clientHeight) {
-                        e.stopPropagation();
-                    }
-                };
-
-                this.list.addEventListener('touchstart', stopTouch, { passive: true });
-                this.list.addEventListener('touchmove', stopTouch, { passive: true });
-                this.list.addEventListener('touchend', stopTouch, { passive: true });
-            }
+            // Prevent all touch events from reaching the game engine when modal is open
+            this.modal.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+            this.modal.addEventListener('touchmove', (e) => {
+                // If touching the list, let it bubble to the list's own handler
+                // but stop it from reaching the document/game
+                if (e.target.closest('#leaderboardList')) {
+                    e.stopPropagation();
+                } else {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, { passive: false });
+            this.modal.addEventListener('touchend', (e) => e.stopPropagation(), { passive: true });
         }
     }
 

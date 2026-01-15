@@ -144,26 +144,44 @@
 
     /* Leaderboard Fixes for Mobile Landscape */
     .leaderboard-container {
-        width: 95%;
-        max-height: 98vh;
-        padding: 1.2rem;
-        border-radius: 20px;
+        width: 80%;
+        /* Don't take whole screen width in landscape */
+        max-width: 450px;
+        max-height: 90vh;
+        max-height: calc(var(--vh, 1vh) * 90);
+        padding: 1rem;
+        border-radius: 12px;
+        /* Handle notch/home bar if necessary */
+        margin-bottom: env(safe-area-inset-bottom, 0);
     }
 
     .leaderboard-header {
-        margin-bottom: 0.5rem;
-        padding-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
+        padding-bottom: 0.3rem;
     }
 
     .leaderboard-header h2 {
-        font-size: 1.2rem;
+        font-size: 1rem;
+    }
+
+    .leaderboard-filters {
+        gap: 6px;
+        margin-bottom: 0.8rem;
+    }
+
+    .filter-btn {
+        padding: 4px 6px;
+        font-size: 7px;
+    }
+
+    .leaderboard-entry {
+        padding: 0.4rem 0.6rem;
     }
 
     .player-name-input {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-        width: 200px;
-        border-radius: 12px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        width: 150px;
     }
 
     /* ===== Game Over Landscape Re-layout ===== */
