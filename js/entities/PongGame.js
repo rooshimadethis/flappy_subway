@@ -214,17 +214,24 @@ export default class PongGame {
 
             if (dx < paddleHalfWidth + CONFIG.pong.ballSize && dz < paddleHalfDepth + CONFIG.pong.ballSize) {
                 // Collision detected!
-                this.ballVelocity.z *= -1;
 
-                // Add some angle based on where it hit the paddle
+                // Calculate current speed from config to ensure it never changes
+                const speed = CONFIG.pong.ballSpeed;
+
+                // Determine horizontal bounce angle based on where it hit the paddle
                 const hitOffset = (this.ball.position.x - paddle.position.x) / paddleHalfWidth;
-                this.ballVelocity.x += hitOffset * 0.1;
 
-                // (Speed increase removed)
-                // this.ballVelocity.multiplyScalar(1.05);
+                // Set new X velocity and adjust Z to maintain exact constant speed
+                // Using a max 0.7 ratio for X ensures the ball always has some vertical movement
+                const targetX = hitOffset * (speed * 0.7);
+                this.ballVelocity.x = targetX;
+
+                // Calculate Z needed to maintain 'speed' magnitude: sqrt(speed^2 - x^2)
+                const zDir = isPlayer ? -1 : 1;
+                this.ballVelocity.z = zDir * Math.sqrt(Math.max(0, speed * speed - targetX * targetX));
 
                 if (isPlayer) {
-                    this.onScore(); // Bonus points for hitting?
+                    this.onScore();
                 }
 
                 // Prevent sticking
