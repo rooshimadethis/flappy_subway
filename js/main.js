@@ -7,7 +7,6 @@ import Pipe from './entities/Pipe.js';
 import SubwayPlayer from './entities/SubwayPlayer.js';
 import SubwayObstacle from './entities/SubwayObstacle.js';
 import SubwayCoin from './entities/SubwayCoin.js';
-import PongGame from './entities/PongGame.js';
 
 // ===== DUAL GAME MANAGER =====
 class DualGame {
@@ -18,7 +17,6 @@ class DualGame {
             this.flappyCtx = this.flappyCanvas.getContext('2d');
             this.subwayCanvas = document.getElementById('subwayCanvas');
             this.subwayCtx = this.subwayCanvas.getContext('2d');
-            this.pongContainer = document.getElementById('pongContainer');
 
             this.state = new DualGameState();
             this.leaderboard = new LeaderboardManager();
@@ -40,15 +38,6 @@ class DualGame {
             this.lastCoinTime = 0;
             this.subwaySpawnTimer = 0;
             this.coinSpawnedThisCycle = false;
-
-            this.pongGame = new PongGame(
-                'pongContainer',
-                () => {
-                    this.state.incrementPongScore();
-                    this.updateUI();
-                },
-                (cause) => this.gameOver(cause)
-            );
 
             this.lastFrameTime = 0;
             this.gameOverTime = 0;
@@ -243,8 +232,6 @@ class DualGame {
         this.lastPipeTime = Date.now();
         this.lastObstacleTime = Date.now();
         this.lastCoinTime = Date.now();
-        this.pongGame.requestPermissions();
-        this.pongGame.start();
     }
 
     restartGame() {
@@ -276,8 +263,6 @@ class DualGame {
         this.lastPipeTime = Date.now();
         this.lastObstacleTime = Date.now();
         this.lastCoinTime = Date.now();
-        this.pongGame.requestPermissions();
-        this.pongGame.start();
     }
 
     gameOver(cause) {
@@ -289,7 +274,6 @@ class DualGame {
 
         document.getElementById('deathMessage').textContent = cause;
         document.getElementById('finalFlappyScore').textContent = this.state.flappyScore;
-        document.getElementById('finalPongScore').textContent = this.state.pongScore;
         document.getElementById('finalSubwayScore').textContent = this.state.subwayScore;
         document.getElementById('finalTotalScore').textContent = this.state.getTotalScore();
         document.getElementById('gameOverScreen').classList.remove('hidden');
@@ -298,7 +282,6 @@ class DualGame {
     updateUI() {
         if (!this.state) return;
         document.getElementById('flappyScore').textContent = this.state.flappyScore;
-        document.getElementById('pongScore').textContent = this.state.pongScore;
         document.getElementById('subwayScore').textContent = this.state.subwayScore;
         document.getElementById('totalScore').textContent = this.state.getTotalScore();
         document.getElementById('highScore').textContent = this.state.highScore;
@@ -393,9 +376,6 @@ class DualGame {
             this.gameOver('💥 Crashed in Subway Surfers!');
             return;
         }
-
-        // ===== UPDATE PONG =====
-        this.pongGame.update(dt);
     }
 
     draw() {
@@ -430,9 +410,6 @@ class DualGame {
             }
 
             this.player.draw(this.subwayCtx);
-
-            // ===== DRAW PONG =====
-            this.pongGame.render();
         } catch (e) {
             logError(e);
         }
