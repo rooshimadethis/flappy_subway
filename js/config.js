@@ -44,13 +44,6 @@ export const CONFIG = {
             width: 40,
             height: 40
         }
-    },
-    pong: {
-        ballSpeed: 0.15,
-        paddleSpeed: 0.1,
-        courtSize: { width: 10, height: 20 },
-        paddleSize: { width: 3, height: 0.5 },
-        ballSize: 0.3
     }
 };
 

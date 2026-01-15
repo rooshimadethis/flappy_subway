@@ -1,7 +1,6 @@
 export default class DualGameState {
     constructor() {
         this.flappyScore = 0;
-        this.pongScore = 0;
         this.subwayScore = 0;
         this.highScore = parseInt(localStorage.getItem('dualChallengeHighScore')) || 0;
         this.isPlaying = false;
@@ -14,18 +13,13 @@ export default class DualGameState {
         this.updateHighScore();
     }
 
-    incrementPongScore() {
-        this.pongScore += 5; // Pong points are worth more since it's hard!
-        this.updateHighScore();
-    }
-
     incrementSubwayScore(points = 1) {
         this.subwayScore += points;
         this.updateHighScore();
     }
 
     getTotalScore() {
-        return this.flappyScore + this.pongScore + this.subwayScore;
+        return this.flappyScore + this.subwayScore;
     }
 
     updateHighScore() {
@@ -38,7 +32,6 @@ export default class DualGameState {
 
     reset() {
         this.flappyScore = 0;
-        this.pongScore = 0;
         this.subwayScore = 0;
         this.isPlaying = false;
         this.isGameOver = false;
