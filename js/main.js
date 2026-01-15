@@ -348,7 +348,7 @@ class DualGame {
 
             if (!this.obstacles[i].passed && this.obstacles[i].y > this.player.y + this.player.height) {
                 this.obstacles[i].passed = true;
-                if (this.obstacles[i].type === 'train') {
+                if (this.obstacles[i].type === 'train' || this.obstacles[i].type === 'barrier') {
                     this.state.incrementSubwayScore(1);
                     this.updateUI();
                 }
